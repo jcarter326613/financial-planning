@@ -27,6 +27,7 @@ jobs:
 
   build-and-upload:
     runs-on: ubuntu-latest
+    environment: main
     needs: 
       - create-s3
     steps:
