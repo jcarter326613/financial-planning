@@ -3,8 +3,35 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: freedays.life
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: 404.html
 
   S3WwwBucket:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: www.freedays.life
+      AccessControl: BucketOwnerFullControl
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref RootBucket
+
+  Dns:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: freedays.life
+      Comment: Zone apex alias.
+      RecordSets:
+      - 
+        Name: freedays.life
+        Type: A
+        AliasTarget:
+          HostedZoneId: Z3AQBSTGFYJSTF
+          DNSName: s3-website-us-east-1.amazonaws.com
+      -
+        Name: www.freedays.life
+        Type: CNAME
+        TTL: 900
+        ResourceRecords:
+        - !GetAtt S3WwwBucket.DomainName
