@@ -15,12 +15,12 @@ Resources:
       AccessControl: BucketOwnerFullControl
       WebsiteConfiguration:
         RedirectAllRequestsTo:
-          HostName: !Ref RootBucket
+          HostName: !Ref S3Bucket
 
   Dns:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneName: freedays.life
+      HostedZoneName: freedays.life.
       Comment: Zone apex alias.
       RecordSets:
       - 
