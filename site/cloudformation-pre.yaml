@@ -71,3 +71,36 @@ Resources:
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: Identify for freedays.life
+
+  CloudfrontDistribution:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        Aliases: 
+          - freedays.life
+        Comment: freedays.life
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: True
+          TargetOriginId: S3-origin-freedays-life
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Enabled: True
+        HttpVersion: http2
+        IPV6Enabled: True
+        Origins:
+          - DomainName: !GetAtt S3Bucket.RegionalDomainName
+            Id: S3-origin-freedays-life
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudfrontOriginAccessIdentity}"
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          AcmCertificateArn: !Ref HttpsCertificateArn
+          MinimumProtocolVersion: TLSv1.2_2018
+          SslSupportMethod: sni-only
