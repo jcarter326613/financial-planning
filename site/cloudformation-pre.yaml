@@ -1,4 +1,6 @@
 Resources:
+  ##
+  # Create the bucket to server up HTTP
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -21,6 +23,8 @@ Resources:
             Resource: "arn:aws:s3:::freedays.life/*"
             Principal: "*"
 
+  ##
+  # Create the www redirect bucket
   S3WwwBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -30,6 +34,8 @@ Resources:
         RedirectAllRequestsTo:
           HostName: !Ref S3Bucket
 
+  ##
+  # Configure DNS
   Dns:
     Type: AWS::Route53::RecordSetGroup
     Properties:
@@ -48,3 +54,20 @@ Resources:
         AliasTarget:
           HostedZoneId: Z3AQBSTGFYJSTF
           DNSName: s3-website-us-east-1.amazonaws.com
+
+  ## 
+  # Enabling HTTPS
+  HttpsCertificateArn:
+    Type: "AWS::CertificateManager::Certificate"
+    Properties: 
+      DomainName: freedays.life
+      DomainValidationOptions:
+        - DomainName: freedays.life
+          HostedZoneId: Z1010109YWO3304ER5BF
+      ValidationMethod: DNS
+
+  CloudfrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Identify for freedays.life
