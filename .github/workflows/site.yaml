@@ -37,8 +37,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v2
 
-      - name: Install Gatsby
-        run: sudo npm i -g gatsby-cli
+      - name: Install Other Dependencies
+        run: |
+          sudo npm i -g typescript
+          sudo npm i -g gatsby-cli
 
       - name: Build the site
         run: |
