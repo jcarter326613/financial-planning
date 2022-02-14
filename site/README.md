@@ -19,6 +19,3 @@ npm run develop
 Site url: http://localhost:8000
 
 GraphQL interface: http://localhost:8000/___graphql
-
-
-https://www.brianperry.dev/til/2021/gatsby-debugging-in-vs-code/
