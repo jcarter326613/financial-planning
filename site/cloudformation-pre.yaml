@@ -33,6 +33,7 @@ Resources:
       WebsiteConfiguration:
         RedirectAllRequestsTo:
           HostName: !Ref S3Bucket
+          Protocol: https
 
   ##
   # Configure DNS
@@ -43,12 +44,6 @@ Resources:
       Comment: Zone apex alias.
       RecordSets:
       - 
-        Name: a.freedays.life
-        Type: A
-        AliasTarget:
-          HostedZoneId: Z3AQBSTGFYJSTF
-          DNSName: s3-website-us-east-1.amazonaws.com
-      - 
         Name: freedays.life
         Type: A
         AliasTarget:
@@ -58,8 +53,8 @@ Resources:
         Name: www.freedays.life
         Type: A
         AliasTarget:
-          HostedZoneId: Z3AQBSTGFYJSTF
-          DNSName: s3-website-us-east-1.amazonaws.com
+          HostedZoneId: Z2FDTNDATAQYW2
+          DNSName: d1er1jomrd9uff.cloudfront.net
 
   ## 
   # Enabling HTTPS

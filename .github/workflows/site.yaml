@@ -55,5 +55,4 @@ jobs:
 
       - name: Upload site
         run: |
-          pwd
           aws s3 sync ./site/public s3://freedays.life --size-only
