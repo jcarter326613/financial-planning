@@ -22,7 +22,7 @@ Resources:
             Effect: Allow
             Resource: "arn:aws:s3:::freedays.life/*"
             Principal:
-              CanonicalUser: !GetAtt CfOriginAccessIdentity.S3CanonicalUserId
+              CanonicalUser: !GetAtt CloudfrontOriginAccessIdentity.S3CanonicalUserId
 
   ##
   # Create the www redirect bucket
