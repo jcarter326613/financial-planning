@@ -80,6 +80,7 @@ Resources:
       DistributionConfig:
         Aliases: 
           - freedays.life
+          - www.freedays.life
         Comment: freedays.life
         DefaultCacheBehavior:
           AllowedMethods:
