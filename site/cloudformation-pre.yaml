@@ -66,6 +66,8 @@ Resources:
       DomainValidationOptions:
         - DomainName: freedays.life
           HostedZoneId: Z1010109YWO3304ER5BF
+        - DomainName: www.freedays.life
+          HostedZoneId: Z1010109YWO3304ER5BF
       SubjectAlternativeNames:
         - www.freedays.life
       ValidationMethod: DNS
