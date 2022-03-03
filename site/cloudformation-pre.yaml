@@ -60,12 +60,14 @@ Resources:
   ## 
   # Enabling HTTPS
   HttpsCertificateArn:
-    Type: "AWS::CertificateManager::Certificate"
+    Type: AWS::CertificateManager::Certificate
     Properties: 
       DomainName: freedays.life
       DomainValidationOptions:
         - DomainName: freedays.life
           HostedZoneId: Z1010109YWO3304ER5BF
+      SubjectAlternativeNames:
+        - freedays.life
       ValidationMethod: DNS
 
   CloudfrontOriginAccessIdentity:
@@ -75,7 +77,7 @@ Resources:
         Comment: Identify for freedays.life
 
   CloudfrontDistribution:
-    Type: "AWS::CloudFront::Distribution"
+    Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Aliases: 
