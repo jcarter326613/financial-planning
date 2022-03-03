@@ -96,8 +96,7 @@ Resources:
         HttpVersion: http2
         IPV6Enabled: True
         Origins:
-          - DomainName: freedays.life.s3-website-us-east-1.amazonaws.com
-            # !GetAtt S3Bucket.RegionalDomainName
+          - DomainName: !GetAtt S3Bucket.GlobalDomainName
             Id: S3-origin-freedays-life
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudfrontOriginAccessIdentity}"
