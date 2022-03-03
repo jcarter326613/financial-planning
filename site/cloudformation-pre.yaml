@@ -21,7 +21,8 @@ Resources:
               - 's3:GetObject'
             Effect: Allow
             Resource: "arn:aws:s3:::freedays.life/*"
-            Principal: "*"
+            Principal:
+              CanonicalUser: !GetAtt CfOriginAccessIdentity.S3CanonicalUserId
 
   ##
   # Create the www redirect bucket
@@ -96,7 +97,7 @@ Resources:
         HttpVersion: http2
         IPV6Enabled: True
         Origins:
-          - DomainName: !GetAtt S3Bucket.GlobalDomainName
+          - DomainName: !GetAtt S3Bucket.RegionalDomainName
             Id: S3-origin-freedays-life
             S3OriginConfig:
               OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudfrontOriginAccessIdentity}"
