@@ -66,6 +66,29 @@ jobs:
         run: |
           aws s3 sync ./dist s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code --size-only --delete
 
+  setup-count-macro:
+    runs-on: ubuntu-latest
+    environment: main
+    needs:
+      - create-s3
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          repository: aws-cloudformation/aws-cloudformation-macros
+      
+      - name: Deploy macro
+        run: |
+          cd Count
+          aws cloudformation package \
+            --template-file template.yaml \
+            --s3-bucket ${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code \
+            --output-template-file packaged.yaml
+          aws cloudformation deploy \
+            --stack-name financial-planning-lambdas-count \
+            --template-file packaged.yaml \
+            --capabilities CAPABILITY_IAM
+
   deploy:
     runs-on: ubuntu-latest
     environment: main
