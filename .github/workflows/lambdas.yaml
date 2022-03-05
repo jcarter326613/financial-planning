@@ -26,7 +26,7 @@ jobs:
         run: |
           cd lambdas
           aws cloudformation deploy --template-file cloudformation-pre.yaml --stack-name financial-planning-lambdas-pre --capabilities CAPABILITY_NAMED_IAM --parameter-overrides \
-            BucketName=${{ secrets.AWS_ACCOUNT_ID }}-lambda-code
+            BucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code
 
   build-and-upload:
     runs-on: ubuntu-latest
@@ -58,4 +58,4 @@ jobs:
 
       - name: Upload site
         run: |
-          aws s3 sync ./lambdas/out s3://${{ secrets.AWS_ACCOUNT_ID }}-lambda-code --size-only
+          aws s3 sync ./lambdas/out s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code --size-only
