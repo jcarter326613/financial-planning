@@ -59,4 +59,4 @@ jobs:
 
       - name: Upload site
         run: |
-          aws s3 sync ./site/public s3://freedays.life --size-only
+          aws s3 sync ./site/public s3://freedays.life --size-only --delete
