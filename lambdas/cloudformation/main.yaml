@@ -6,9 +6,6 @@ Parameters:
   BucketName:
     Type: String
     Description: The name of the S3 bucket
-  BuildTag:
-    Type: String
-    Description: The part of the zip filename indicating the version to load
   EntryPoints:
     Type: CommaDelimitedList
     Description: A comma delimited list of entry points
@@ -24,7 +21,6 @@ Resources:
       TemplateURL: sgegs
       Parameters:
         BucketName: !Ref BucketName
-        BuildTag: !Ref BuildTag
         Handler: !Select
           - "%d"
           - !Ref EntryPoints
