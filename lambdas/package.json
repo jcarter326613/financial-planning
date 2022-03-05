@@ -10,9 +10,6 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@types/node": "^16.11.12"
-  },
   "devDependencies": {
     "@types/node": "^12.12.11",
     "typescript": "^3.9.7"
