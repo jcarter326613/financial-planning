@@ -26,5 +26,5 @@ Resources:
         BucketName: !Ref BucketName
         BuildTag: !Ref BuildTag
         Handler: !Select
-          - %d
+          - "%d"
           - !Ref EntryPoints
