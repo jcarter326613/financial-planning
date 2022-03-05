@@ -8,21 +8,8 @@ on:
     #  - lambdas/**
 
 jobs:
-  setup-vars:
-    runs-on: ubuntu-latest
-    environment: main
-    steps:
-      - id: setup-vars
-        run: |
-          echo "::set-output name=BucketName::${{ secrets.AWS_ACCESS_KEY_ID }}-lambda-code"
-
-    outputs:
-      BucketName: ${{ steps.setup-vars.output.BucketName }}
-
   create-s3:
     runs-on: ubuntu-latest
-    needs:
-      - setup-vars
     environment: main
     steps:
       - name: Checkout
@@ -39,14 +26,13 @@ jobs:
         run: |
           cd lambdas
           aws cloudformation deploy --template-file cloudformation-pre.yaml --stack-name financial-planning-lambdas-pre --capabilities CAPABILITY_NAMED_IAM --parameter-overrides \
-            BucketName=${{ needs.setup-vars.outputs.BucketName }}
+            BucketName=${{ secrets.AWS_ACCOUNT_ID }}-lambda-code
 
   build-and-upload:
     runs-on: ubuntu-latest
     environment: main
     needs: 
       - create-s3
-      - setup-vars
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -72,4 +58,4 @@ jobs:
 
       - name: Upload site
         run: |
-          aws s3 sync ./lambdas/out s3://${{ needs.setup-vars.outputs.BucketName }} --size-only
+          aws s3 sync ./lambdas/out s3://${{ secrets.AWS_ACCOUNT_ID }}-lambda-code --size-only
