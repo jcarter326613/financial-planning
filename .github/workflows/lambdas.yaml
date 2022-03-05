@@ -48,9 +48,13 @@ jobs:
         run: |
           cd lambdas
           tsc
+          pwd
+          ls out
 
       - name: Package
         run: |
+          pwd
+          ls out
           zip -r dist.zip out/* -i *.js
 
       - name: Configure AWS credentials
