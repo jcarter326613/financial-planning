@@ -1,7 +1,12 @@
+Parameters:
+  BucketName:
+    Type: String
+    Description: The name of the S3 bucket
+
 Resources:
   ##
   # Create the bucket to store the lambda code
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub ${AWS::AccountId}-lambda-code
+      BucketName: !Ref BucketName

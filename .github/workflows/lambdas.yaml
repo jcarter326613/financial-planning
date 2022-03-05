@@ -38,7 +38,7 @@ jobs:
       - name: Deploy Cloudformation Template
         run: |
           cd lambdas
-          aws cloudformation deploy --template-file cloudformation-pre.yaml --stack-name financial-planning-lambdas-pre --capabilities CAPABILITY_NAMED_IAM --parameters \
+          aws cloudformation deploy --template-file cloudformation-pre.yaml --stack-name financial-planning-lambdas-pre --capabilities CAPABILITY_NAMED_IAM --parameter-overrides \
             BucketName=${{ needs.setup-vars.outputs.BucketName }}
 
   build-and-upload:
