@@ -54,8 +54,10 @@ jobs:
       - name: Package
         run: |
           pwd
-          ls out
-          zip -r dist.zip out/* -i *.js
+          ls
+          pwd
+          ls lambdas
+          zip -r dist.zip lambdas/out/* -i *.js
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -66,6 +68,7 @@ jobs:
 
       - name: Upload artifact
         run: |
+          pwd
           aws s3 sync ./dist.zip s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambdas-pre --size-only
 
   deploy:
