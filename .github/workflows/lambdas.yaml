@@ -47,16 +47,11 @@ jobs:
       - name: Build the lambdas
         run: |
           cd lambdas
+          npm install
           tsc
-          pwd
-          ls out
 
       - name: Package
         run: |
-          pwd
-          ls
-          pwd
-          ls lambdas
           mkdir dist
           zip -r dist/lambdas.zip lambdas/out/* -i *.js
 
@@ -69,8 +64,7 @@ jobs:
 
       - name: Upload artifact
         run: |
-          pwd
-          aws s3 sync ./dist s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambdas-pre --size-only --delete
+          aws s3 sync ./dist s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code --size-only --delete
 
   deploy:
     runs-on: ubuntu-latest
