@@ -1,0 +1,24 @@
+Transform: 
+  - AWS::Serverless-2016-10-31
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: The name of the S3 bucket
+  BuildTag:
+    Type: String
+    Description: The part of the zip filename indicating the version to load
+  Handler:
+    Type: String
+    Description: The entry point into the lambda function
+
+Resources:
+  TestLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: 
+        Bucket: !Ref BucketName
+        Key: !Join ["-", [!Ref BuildTag, "deployment.zip"]]
+      Runtime: "nodejs14.x"
+      Handler: !Ref Handler
+      Timeout: 10

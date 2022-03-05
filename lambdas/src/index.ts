@@ -1,6 +1,9 @@
-const entry = () =>
+export const entry = () =>
 {
     return `Hello world`
 }
 
-export default entry
+export const entry2 = () =>
+{
+    return `Goodbye world`
+}

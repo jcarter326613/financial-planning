@@ -24,7 +24,7 @@ jobs:
 
       - name: Deploy Cloudformation Template
         run: |
-          cd lambdas
+          cd lambdas/cloudformation
           aws cloudformation deploy --template-file cloudformation-pre.yaml --stack-name financial-planning-lambdas-pre --capabilities CAPABILITY_NAMED_IAM --parameter-overrides \
             BucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code
 
@@ -49,6 +49,10 @@ jobs:
           cd lambdas
           tsc
 
+      - name: Package
+        run: |
+          zip -r dist.zip out/* -i *.js
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -56,6 +60,30 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Upload site
+      - name: Upload artifact
         run: |
-          aws s3 sync ./lambdas/out s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code --size-only
+          aws s3 sync ./lambdas/dist.zip s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambdas-pre --size-only
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: main
+    needs: 
+      - create-s3
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy Cloudformation Template
+        run: |
+          cd lambdas/cloudformation
+          aws cloudformation deploy --template-file main.yaml --stack-name financial-planning-lambdas-main --capabilities CAPABILITY_NAMED_IAM --parameter-overrides \
+            BucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code
+            EntryPoints=index.entry,index.entry2
+            NumEntryPoints=2
