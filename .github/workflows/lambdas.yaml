@@ -1,9 +1,10 @@
 name: Site
 
 on:
-  push:
-    branches:
-      - main
+  push
+  #push:
+    #branches:
+    #  - main
     #paths:
     #  - lambdas/**
 
