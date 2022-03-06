@@ -16,11 +16,11 @@ Parameters:
 Resources:
   Lambda:
     Type: AWS::CloudFormation::Stack
-    Count: !Ref NumEntryPoints
+    Count: 2
     Properties:
       TemplateURL: sgegs
       Parameters:
         BucketName: !Ref BucketName
         Handler: !Select
-          - "%d"
+          - %d
           - !Ref EntryPoints
