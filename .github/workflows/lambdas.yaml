@@ -87,6 +87,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Deploy macro
+        #https://github.com/aws-cloudformation/aws-cloudformation-macros/tree/master/Count
         run: |
           cd Count
           aws cloudformation package \
@@ -119,18 +120,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-
-      - name: Prepare the template
-        #https://github.com/aws-cloudformation/aws-cloudformation-macros/tree/master/Count
-        run: |
-          aws cloudformation package \
-            --template-file main.yaml \
-            --s3-bucket ${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda \
-            --output-template-file packaged.yaml
-          aws cloudformation deploy \
-            --stack-name Count-macro \
-            --template-file packaged.yaml \
-            --capabilities CAPABILITY_IAM
 
       - name: Deploy Cloudformation Template
         run: |
