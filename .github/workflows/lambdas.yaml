@@ -27,7 +27,7 @@ jobs:
         run: |
           cd lambdas/cloudformation
           aws cloudformation deploy --template-file pre.yaml --stack-name financial-planning-lambdas-pre --capabilities CAPABILITY_NAMED_IAM --parameter-overrides \
-            LambdaBucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code \
+            LambdaBucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda \
             CountBucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-count
 
   build-and-upload:
@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload artifact
         run: |
-          aws s3 sync ./dist s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code --size-only --delete
+          aws s3 sync ./dist s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda --size-only --delete
 
   setup-count-macro:
     runs-on: ubuntu-latest
@@ -124,7 +124,7 @@ jobs:
         run: |
           aws cloudformation package \
             --template-file main.yaml \
-            --s3-bucket ${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code \
+            --s3-bucket ${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda \
             --output-template-file packaged.yaml
           aws cloudformation deploy \
             --stack-name Count-macro \
@@ -135,6 +135,6 @@ jobs:
         run: |
           cd lambdas/cloudformation
           aws cloudformation deploy --template-file main.yaml --stack-name financial-planning-lambdas-main --capabilities CAPABILITY_NAMED_IAM --parameter-overrides \
-            BucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code \
+            BucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda \
             EntryPoints=index.entry,index.entry2 \
             NumEntryPoints=2
