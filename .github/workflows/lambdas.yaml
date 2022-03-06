@@ -88,6 +88,7 @@ jobs:
 
       - name: Deploy macro
         run: |
+          cd Count
           aws cloudformation package \
             --template-file template.yaml \
             --s3-bucket ${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-count \
@@ -122,7 +123,6 @@ jobs:
       - name: Prepare the template
         #https://github.com/aws-cloudformation/aws-cloudformation-macros/tree/master/Count
         run: |
-          cd Count
           aws cloudformation package \
             --template-file main.yaml \
             --s3-bucket ${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda \
