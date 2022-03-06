@@ -27,7 +27,8 @@ jobs:
         run: |
           cd lambdas/cloudformation
           aws cloudformation deploy --template-file pre.yaml --stack-name financial-planning-lambdas-pre --capabilities CAPABILITY_NAMED_IAM --parameter-overrides \
-            BucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code
+            LambdaBucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code
+            CountBucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-count
 
   build-and-upload:
     runs-on: ubuntu-latest
@@ -87,17 +88,19 @@ jobs:
 
       - name: Deploy macro
         run: |
-          cd Count
-          ls
-          pwd
           aws cloudformation package \
             --template-file template.yaml \
-            --s3-bucket 203695469444-financial-planning-lambda-code \
+            --s3-bucket ${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-count \
             --output-template-file packaged.yaml
           aws cloudformation deploy \
             --stack-name financial-planning-lambdas-count \
             --template-file packaged.yaml \
             --capabilities CAPABILITY_IAM
+
+      - name: Clean the s3 bucket
+        run: |
+          mkdir blankdir
+          aws s3 sync ./blankdir s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-count --delete
 
   deploy:
     runs-on: ubuntu-latest

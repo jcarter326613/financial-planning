@@ -1,16 +1,27 @@
 Parameters:
-  BucketName:
+  LambdaBucketName:
     Type: String
-    Description: The name of the S3 bucket
+    Description: The name of the S3 bucket for the lambda
+  CountBucketName:
+    Type: String
+    Description: The name of the S3 bucket for the count macro
 
 Resources:
-  ##
-  # Create the bucket to store the lambda code
-  S3Bucket:
+  LambdaBucket:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: Private
-      BucketName: !Ref BucketName
+      BucketName: !Ref LambdaBucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+  MacroBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName: !Ref CountBucketName
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         BlockPublicPolicy: true
