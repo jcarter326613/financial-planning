@@ -22,5 +22,5 @@ Resources:
       Parameters:
         BucketName: !Ref BucketName
         Handler: !Select
-          - %d
+          - "%d"
           - !Ref EntryPoints
