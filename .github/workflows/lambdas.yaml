@@ -27,7 +27,7 @@ jobs:
         run: |
           cd lambdas/cloudformation
           aws cloudformation deploy --template-file pre.yaml --stack-name financial-planning-lambdas-pre --capabilities CAPABILITY_NAMED_IAM --parameter-overrides \
-            LambdaBucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code
+            LambdaBucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code \
             CountBucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-count
 
   build-and-upload:
