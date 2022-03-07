@@ -1,11 +1,11 @@
-name: Site
+name: Lambdas
 
 on:
   push:
     branches:
       - main
-    #paths:
-    #  - lambdas/**
+    paths:
+      - lambdas/**
 
 jobs:
   create-s3:
@@ -53,7 +53,7 @@ jobs:
       - name: Package
         run: |
           mkdir dist
-          zip -r dist/lambdas.zip lambdas/out/* -i *.js
+          zip -r dist/lambdas-${{ github.sha }}.zip lambdas/out/* -i *.js
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -90,4 +90,5 @@ jobs:
             --template-file packaged.yaml \
             --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
             --parameter-overrides \
-              BucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code
+              BucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code \
+              ZipFileName=lambdas-${{ github.sha }}.zip

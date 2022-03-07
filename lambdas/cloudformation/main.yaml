@@ -4,6 +4,9 @@ Parameters:
   BucketName:
     Type: String
     Description: The name of the S3 bucket
+  ZipFileName:
+    Type: String
+    Description: The name of the zip file which contains the lambda code
 
 Resources:
   Lambda:
@@ -14,3 +17,5 @@ Resources:
         BucketName: 
           Ref: BucketName
         Handler: Place holder
+        ZipFileName: 
+          Ref: ZipFileName
