@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Gatsby develop",
+            "type": "pwa-node",
+            "request": "launch",
+            "program": "${workspaceRoot}/site/node_modules/.bin/gatsby",
+            "args": ["develop"],
+            "runtimeArgs": ["--nolazy"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceRoot}/site"
+        },
+        {
+            "name": "Gatsby build",
+            "type": "pwa-node",
+            "request": "launch",
+            "program": "${workspaceRoot}/site/node_modules/.bin/gatsby",
+            "args": ["build"],
+            "runtimeArgs": ["--nolazy"],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceRoot}/site"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Generate Lambda CF",
+            "program": "${workspaceFolder}/lambdas/src/scripts/generate_lambda_cf.ts",
+            "preLaunchTask": "tsc: build - lambdas/tsconfig.json",
+            "outFiles": ["${workspaceFolder}/lambdas/out/**/*.js"],
+            "args": [
+                "${workspaceFolder}/lambdas/cloudformation/main.yaml",
+                "${workspaceFolder}/lambdas/cloudformation/main_out.yaml",
+                "${workspaceFolder}/lambdas/src/controllers"
+            ]
+        }
+    ]
+}

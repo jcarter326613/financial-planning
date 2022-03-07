@@ -1,0 +1,16 @@
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: The name of the S3 bucket
+
+Resources:
+  Lambda:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./lambda.yaml
+      Parameters:
+        BucketName: 
+          Ref: BucketName
+        Handler: Place holder

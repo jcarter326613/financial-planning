@@ -1,0 +1,62 @@
+name: Site
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - site/**
+
+jobs:
+  create-s3:
+    runs-on: ubuntu-latest
+    environment: main
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy Cloudformation Template
+        run: |
+          cd site
+          aws cloudformation deploy --template-file cloudformation-pre.yaml --stack-name financial-planning-site-pre --capabilities CAPABILITY_NAMED_IAM
+
+  build-and-upload:
+    runs-on: ubuntu-latest
+    environment: main
+    needs: 
+      - create-s3
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+
+      - name: Install Other Dependencies
+        run: |
+          sudo npm i -g typescript
+          sudo npm i -g gatsby-cli
+
+      - name: Build the site
+        run: |
+          cd site
+          npm install
+          gatsby build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Upload site
+        run: |
+          aws s3 sync ./site/public s3://freedays.life --size-only --delete

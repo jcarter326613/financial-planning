@@ -1,0 +1,113 @@
+Resources:
+  ##
+  # Create the bucket to server up HTTP
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: freedays.life
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: 404.html
+
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3Bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: "arn:aws:s3:::freedays.life/*"
+            Principal:
+              CanonicalUser: !GetAtt CloudfrontOriginAccessIdentity.S3CanonicalUserId
+
+  ##
+  # Create the www redirect bucket
+  S3WwwBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: www.freedays.life
+      AccessControl: BucketOwnerFullControl
+      WebsiteConfiguration:
+        RedirectAllRequestsTo:
+          HostName: !Ref S3Bucket
+          Protocol: https
+
+  ##
+  # Configure DNS
+  Dns:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: freedays.life.
+      Comment: Zone apex alias.
+      RecordSets:
+      - 
+        Name: freedays.life
+        Type: A
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2
+          DNSName: d1er1jomrd9uff.cloudfront.net
+      - 
+        Name: www.freedays.life
+        Type: A
+        AliasTarget:
+          HostedZoneId: Z2FDTNDATAQYW2
+          DNSName: d1er1jomrd9uff.cloudfront.net
+
+  ## 
+  # Enabling HTTPS
+  HttpsCertificateArn:
+    Type: AWS::CertificateManager::Certificate
+    Properties: 
+      DomainName: freedays.life
+      DomainValidationOptions:
+        - DomainName: freedays.life
+          HostedZoneId: Z1010109YWO3304ER5BF
+        - DomainName: www.freedays.life
+          HostedZoneId: Z1010109YWO3304ER5BF
+      SubjectAlternativeNames:
+        - www.freedays.life
+      ValidationMethod: DNS
+
+  CloudfrontOriginAccessIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: Identify for freedays.life
+
+  CloudfrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Aliases: 
+          - freedays.life
+          - www.freedays.life
+        Comment: freedays.life
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          ForwardedValues:
+            QueryString: True
+          TargetOriginId: S3-origin-freedays-life
+          ViewerProtocolPolicy: redirect-to-https
+        DefaultRootObject: index.html
+        Enabled: True
+        HttpVersion: http2
+        IPV6Enabled: True
+        Origins:
+          - DomainName: !GetAtt S3Bucket.RegionalDomainName
+            Id: S3-origin-freedays-life
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${CloudfrontOriginAccessIdentity}"
+        PriceClass: PriceClass_All
+        ViewerCertificate:
+          AcmCertificateArn: !Ref HttpsCertificateArn
+          MinimumProtocolVersion: TLSv1.2_2018
+          SslSupportMethod: sni-only

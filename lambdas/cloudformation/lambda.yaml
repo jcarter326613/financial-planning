@@ -1,0 +1,21 @@
+Transform: 
+  - AWS::Serverless-2016-10-31
+
+Parameters:
+  BucketName:
+    Type: String
+    Description: The name of the S3 bucket
+  Handler:
+    Type: String
+    Description: The entry point into the lambda function
+
+Resources:
+  Lambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: 
+        Bucket: !Ref BucketName
+        Key: lambdas.zip
+      Runtime: "nodejs14.x"
+      Handler: !Ref Handler
+      Timeout: 10
