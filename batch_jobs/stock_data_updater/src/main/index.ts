@@ -1,13 +1,16 @@
-import { config } from "aws-sdk"
-import { mainModule } from "process"
+import pkg from "aws-sdk"
 import { Parameters } from "./parameters"
+import { StockDataRetriever } from "./stockDataRetriever"
+
+const {config} = pkg
 
 config.update({region: 'us-east-1'})
 
 async function main()
 {
     await Parameters.instance.initialize()
-    console.log(`Extracted connection string ${Parameters.instance.mongoDbConnectionString}`)
+    let stockRetriever = new StockDataRetriever()
+    stockRetriever.retrieveDataForSymbol()
 }
 main()
 

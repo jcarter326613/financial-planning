@@ -8,9 +8,10 @@
             "type": "pwa-node",
             "request": "launch",
             "name": "Stock Data Updater",
-            "program": "${workspaceFolder}/stock_data_updater/src/main/index.ts",
+            //"program": "${workspaceFolder}/stock_data_updater/src/main/index.ts",
             "preLaunchTask": "tsc: build - stock_data_updater/tsconfig.json",
-            "outFiles": ["${workspaceFolder}/stock_data_updater/out/**/*.js"]
+            "outFiles": ["${workspaceFolder}/stock_data_updater/out/**/*.js"],
+            "args": ["--experimental-specifier-resolution=node", "${workspaceFolder}/stock_data_updater/out/index.js"]
         }
     ]
 }

@@ -1,14 +1,15 @@
 {
     "compilerOptions": {
-        "target": "ES2017",
-        "module": "Commonjs",
+        "target": "ESNEXT",
+        "module": "ESNEXT",
         "moduleResolution": "node",
         "outDir": "out",
         "sourceMap": true,
         "strict": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "esModuleInterop": true
     },
     "include": ["./src/main/**/*"],
     "exclude": ["node_modules", "**/*.spec.ts"]
