@@ -13,12 +13,13 @@ export class StockDataRetriever
         this.timeBetweenRequestsMs = (60 / this.requestsPerMinute) * 1000
     }
 
-    public async retrieveDataForSymbol(): Promise<Array<ClosePrice>>
+    public async retrieveDataForSymbol(symbol: string): Promise<Array<ClosePrice>>
     {
-        let result = await fetch("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&symbol=IBM&apikey=demo")
+        let result = await fetch("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&" +
+            `symbol=${symbol}&` +
+            `apikey=${Parameters.instance.alphaVantageApiKey}`)
             .then(res => res.json())
             .then(res => res)
-        //Parameters.instance.alphaVantageApiKey
         
         this.updateNextAllowedRequest()
 
@@ -33,4 +34,9 @@ export class StockDataRetriever
         let now = Date.now()
         this.nextAllowedRequest = new Date(now + this.timeBetweenRequestsMs)
     }
+}
+
+class StockDataDto
+{
+    
 }

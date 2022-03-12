@@ -1,16 +1,14 @@
-import pkg from "aws-sdk"
+import aws from "aws-sdk"
 import { Parameters } from "./parameters"
 import { StockDataRetriever } from "./stockDataRetriever"
 
-const {config} = pkg
-
-config.update({region: 'us-east-1'})
+aws.config.update({region: 'us-east-1'})
 
 async function main()
 {
     await Parameters.instance.initialize()
     let stockRetriever = new StockDataRetriever()
-    stockRetriever.retrieveDataForSymbol()
+    stockRetriever.retrieveDataForSymbol("TQQQ")
 }
 main()
 

@@ -1,6 +1,4 @@
-import pkg from "aws-sdk"
-
-const {SSM} = pkg
+import aws from "aws-sdk"
 
 export class Parameters
 {
@@ -17,14 +15,14 @@ export class Parameters
 
     public async initialize()
     {
-        const ssm = new SSM()
+        const ssm = new aws.SSM()
         let self = this
 
         self.alphaVantageApiKey = await this.getParameter(ssm, "/freedays/mongoDb/connectionString")
         self.alphaVantageApiKey = await this.getParameter(ssm, "/freedays/alphavantage/apikey")
     }
 
-    private async getParameter(ssm: any, name: string): Promise<string>
+    private async getParameter(ssm: aws.SSM, name: string): Promise<string>
     {
         let retVal: string = ""
         await ssm.getParameter({Name:name, WithDecryption: true}, (err: any, data: any) => {
