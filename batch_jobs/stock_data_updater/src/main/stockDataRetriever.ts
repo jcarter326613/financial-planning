@@ -1,6 +1,7 @@
 import {ClosePrice} from "./closePrice"
 import {Parameters} from "./parameters"
 import fetch from "node-fetch"
+import { AnyAaaaRecord } from "dns"
 
 export class StockDataRetriever
 {
@@ -15,18 +16,23 @@ export class StockDataRetriever
 
     public async retrieveDataForSymbol(symbol: string): Promise<Array<ClosePrice>>
     {
-        let result = await fetch("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&" +
+        let result: any = await fetch("https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY_ADJUSTED&" +
             `symbol=${symbol}&` +
             `apikey=${Parameters.instance.alphaVantageApiKey}`)
             .then(res => res.json())
             .then(res => res)
-        
+
         this.updateNextAllowedRequest()
 
-        return [
-            new ClosePrice(new Date(), 1),
-            new ClosePrice(new Date(), 1)
-        ]
+        let timeSeries = result["Weekly Adjusted Time Series"]
+        let returnArray: Array<ClosePrice> = []
+        for (let date in timeSeries)
+        {
+            let newEntry = new ClosePrice(new Date(date), timeSeries[date]["5. adjusted close"], timeSeries[date]["7. dividend amount"])
+            returnArray.push(newEntry)
+        }
+        
+        return returnArray
     }
 
     private updateNextAllowedRequest()
@@ -38,5 +44,5 @@ export class StockDataRetriever
 
 class StockDataDto
 {
-    
+
 }
