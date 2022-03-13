@@ -10,12 +10,30 @@ Parameters:
 
 Resources:
   Lambda:
-    Type: AWS::CloudFormation::Stack
+    Type: AWS::Serverless::Function
     Properties:
-      TemplateURL: ./lambda.yaml
+      CodeUri: 
+        Bucket: !Ref BucketName
+        Key: !Ref ZipFileName
+      Runtime: "nodejs14.x"
+      Handler: controllers/stockHistoryManagement.patch_addStockToTrack
+      Timeout: 10
+
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Body:
+        swagger: 2.0
+        info:
+          version: 1.0.0
+          title: FreeDays lambdas
+        basePath: /api
+        schemes:
+          - https
+        definitions:
+          Empty:
+            type: object
+      Name: FreeDaysLambdas
       Parameters:
-        BucketName: 
-          Ref: BucketName
-        Handler: Place holder
-        ZipFileName: 
-          Ref: ZipFileName
+        endpointConfigurationTypes: REGIONAL
+
