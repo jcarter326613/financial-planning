@@ -18,7 +18,7 @@ export class Parameters
         const ssm = new aws.SSM()
         let self = this
 
-        self.alphaVantageApiKey = await this.getParameter(ssm, "/freedays/mongoDb/connectionString")
+        self.mongoDbConnectionString = await this.getParameter(ssm, "/freedays/mongoDb/connectionString")
         self.alphaVantageApiKey = await this.getParameter(ssm, "/freedays/alphavantage/apikey")
     }
 

@@ -28,7 +28,18 @@ export class StockDataRetriever
         let returnArray: Array<ClosePrice> = []
         for (let date in timeSeries)
         {
-            let newEntry = new ClosePrice(new Date(date), timeSeries[date]["5. adjusted close"], timeSeries[date]["7. dividend amount"])
+            let close: number = parseFloat(timeSeries[date]["5. adjusted close"])
+            let dividend: number = parseFloat(timeSeries[date]["7. dividend amount"])
+
+            if (date.length != 10 || close <= 0 || dividend < 0)
+            {
+                throw new Error(`Bad format for symbol ${symbol}`)
+            }
+
+            let newEntry = new ClosePrice(
+                new Date(date),
+                close,
+                dividend)
             returnArray.push(newEntry)
         }
         
