@@ -53,8 +53,8 @@ jobs:
       - name: Package
         run: |
           mkdir dist
-          cd lambdas/out
-          zip -r ../../dist/lambdas-${{ github.sha }}.zip * -i *.js
+          cd lambdas
+          zip -r ../dist/lambdas-${{ github.sha }}.zip out/* -i *.js
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
