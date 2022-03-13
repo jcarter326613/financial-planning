@@ -19,6 +19,14 @@ export class Database
         await client.connect()
         let db = client.db(this.databaseName)
         this.collection = db.collection(this.stockHistoryTableName)
+
+        // Create the indexes
+        await this.collection.createIndex({
+            "symbol": 1,
+            "date": 1
+        }, {
+            "unique": true
+        })
     }
 
     public async mergeInPrices(stocks: Array<ClosePrice>, symbol: string)
