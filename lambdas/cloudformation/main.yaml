@@ -30,10 +30,45 @@ Resources:
         basePath: /api
         schemes:
           - https
-        definitions:
-          Empty:
-            type: object
       Name: FreeDaysLambdas
       Parameters:
         endpointConfigurationTypes: REGIONAL
 
+  Method:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId: !GetAtt RestApi.RootResourceId
+      RestApiId: !Ref RestApi
+      AuthorizationType: NONE
+      Integration:
+        Credentials: !GetAtt InvocationRole.Arn
+        IntegrationHttpMethod: POST
+        Type: AWS
+        Uri: !Join
+          - "/"
+          - - "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions"
+            - !GetAtt Lambda.Arn
+            - "invocations"
+
+  InvocationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: 
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: LambdaRuntimePermissions
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: '*'
+                Resource: '*'
