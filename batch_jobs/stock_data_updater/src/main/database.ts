@@ -23,8 +23,9 @@ export class Database
 
     public async mergeInPrices(stocks: Array<ClosePrice>, symbol: string)
     {
-        let startDate = this.getFirstDate()
-        let endDate = this.getLastDate()
+        let boundaryDates = await this.getBoundaryDates(symbol)
+        let startDate = boundaryDates.first
+        let endDate = boundaryDates.last
 
         for (let price of stocks)
         {
@@ -41,25 +42,19 @@ export class Database
         }
     }
 
-    private getFirstDate(): Date | null
+    private async getBoundaryDates(symbol: string): Promise<{first: Date | null, last: Date | null}>
     {
         let collection = this.collection
         if (collection == null) {
             throw new Error("collection can not be null")
         }
 
-        //collection.findOne()
-        return null
-    }
+        let firstDate: any = await collection.find({"symbol": symbol}).sort({"date": 1}).next()
+        let lastDate: any = await collection.find({"symbol": symbol}).sort({"date": -1}).next()
 
-    private getLastDate(): Date | null
-    {
-        let collection = this.collection
-        if (collection == null) {
-            throw new Error("collection can not be null")
+        return {
+            first: firstDate?.date,
+            last: lastDate?.date
         }
-
-        //collection.findOne()
-        return null
     }
 }
