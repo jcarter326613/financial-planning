@@ -1,18 +1,18 @@
 import { LambdaRequest } from "../lambdaRequest"
 import { LambdaResponse } from "../lambdaResponse"
 
-export const patch_addStockToTrack = (request: LambdaRequest): LambdaResponse<Response> => {
+export const patch_addStockToTrack = (request: LambdaRequest, context: any, callback: ((_1: any,_2: any) => void)) => {
     let ret = {
         hello: "World"
     }
 
-    return {
+    callback(null, {
         "statusCode": 200,
         "headers": {
           "Content-Type": "application/json"
         },
-        "body": ret
-    }
+        "body": JSON.stringify(ret)
+    })
 }
 
 interface Response
