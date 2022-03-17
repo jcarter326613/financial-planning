@@ -13,6 +13,12 @@ Parameters:
   InvocationRoleArn:
     Type: String
     Description: The ARN of the invocation role
+  RestApiId:
+    Type: String
+    Description: The id of the rest api
+  RestApiRootResourceId:
+    Type: String
+    Description: The root resource id of the rest api to attach the method to.
   ZipFileName:
     Type: String
     Description: The name of the zip file which contains the lambda code
@@ -35,8 +41,8 @@ Resources:
     Type: AWS::ApiGateway::Method
     Properties:
       HttpMethod: !Ref HttpMethod
-      ResourceId: !GetAtt RestApi.RootResourceId
-      RestApiId: !Ref RestApi
+      ResourceId: !Ref RestApiRootResourceId
+      RestApiId: !Ref RestApiId
       AuthorizationType: NONE
       Integration:
         Credentials: !Ref InvocationRoleArn

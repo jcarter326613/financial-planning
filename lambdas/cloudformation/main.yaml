@@ -81,7 +81,9 @@ Resources:
       Parameters:
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
+        RestApiId: !Ref RestApi
         InvocationRoleArn: !GetAtt InvocationRole.Arn
+        RestApiRootResourceId: !GetAtt RestApi.RootResourceId
         EntryPoint: stockHistoryManagement.patch_addStockToTrack
         HttpMethod: PATCH
       TemplateURL: ./lambda.yaml
