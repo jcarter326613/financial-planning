@@ -9,16 +9,6 @@ Parameters:
     Description: The name of the zip file which contains the lambda code
 
 Resources:
-  Lambda:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: 
-        Bucket: !Ref BucketName
-        Key: !Ref ZipFileName
-      Runtime: "nodejs14.x"
-      Handler: out/controllers/stockHistoryManagement.patch_addStockToTrack
-      Timeout: 10
-
   RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -33,23 +23,6 @@ Resources:
       Name: FreeDaysLambdas
       Parameters:
         endpointConfigurationTypes: REGIONAL
-
-  Method:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      HttpMethod: POST
-      ResourceId: !GetAtt RestApi.RootResourceId
-      RestApiId: !Ref RestApi
-      AuthorizationType: NONE
-      Integration:
-        Credentials: !GetAtt InvocationRole.Arn
-        IntegrationHttpMethod: POST
-        Type: AWS_PROXY
-        Uri: !Join
-          - "/"
-          - - "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions"
-            - !GetAtt Lambda.Arn
-            - "invocations"
 
   InvocationRole:
     Type: AWS::IAM::Role
