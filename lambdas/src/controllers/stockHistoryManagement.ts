@@ -1,21 +1,19 @@
 import { LambdaRequest } from "../lambdaRequest"
-import { LambdaResponse } from "../lambdaResponse"
+import { startCall } from "../lambdaShell"
 
-export const patch_addStockToTrack = (request: LambdaRequest, context: any, callback: ((_1: any,_2: any) => void)) => {
-    let ret = {
-        hello: "World"
-    }
-
-    callback(null, {
-        "statusCode": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": JSON.stringify(ret)
-    })
-}
+export const patch_addStockToTrack = (...args: any[]) => startCall(args, instance.helloWorld)
 
 interface Response
 {
     hello: string
 }
+
+class StockHistoryManagement
+{
+    public helloWorld(request: LambdaRequest): {"hello": string}
+    {
+        return {"hello": "world"}
+    }
+}
+
+const instance = new StockHistoryManagement()

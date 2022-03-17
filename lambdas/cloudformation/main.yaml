@@ -51,8 +51,6 @@ Resources:
             - !GetAtt Lambda.Arn
             - "invocations"
 
-  
-
   InvocationRole:
     Type: AWS::IAM::Role
     Properties:
@@ -74,3 +72,16 @@ Resources:
               - Effect: Allow
                 Action: '*'
                 Resource: '*'
+
+  ##
+  # List of lambdas
+  Lambda1:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        BucketName: !Ref BucketName
+        ZipFileName: !Ref ZipFileName
+        InvocationRoleArn: !GetAtt InvocationRole.Arn
+        EntryPoint: stockHistoryManagement.patch_addStockToTrack
+        HttpMethod: PATCH
+      TemplateURL: ./lambda.yaml

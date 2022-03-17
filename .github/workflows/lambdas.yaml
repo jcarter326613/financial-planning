@@ -70,9 +70,13 @@ jobs:
       - name: Deploy Cloudformation Template
         run: |
           cd lambdas/cloudformation
+          aws cloudformation package \
+            --template-file main.yaml \
+            --s3-bucket ${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code \
+            --output-template-file package.yaml
           aws cloudformation deploy \
             --stack-name financial-planning-lambdas-main \
-            --template-file main.yaml \
+            --template-file package.yaml \
             --capabilities CAPABILITY_IAM CAPABILITY_AUTO_EXPAND \
             --parameter-overrides \
               BucketName=${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code \
