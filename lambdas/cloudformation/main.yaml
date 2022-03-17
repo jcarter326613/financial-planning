@@ -44,12 +44,14 @@ Resources:
       Integration:
         Credentials: !GetAtt InvocationRole.Arn
         IntegrationHttpMethod: POST
-        Type: AWS
+        Type: AWS_PROXY
         Uri: !Join
           - "/"
           - - "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions"
             - !GetAtt Lambda.Arn
             - "invocations"
+
+  
 
   InvocationRole:
     Type: AWS::IAM::Role

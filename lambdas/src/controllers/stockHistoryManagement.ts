@@ -11,7 +11,8 @@ export const patch_addStockToTrack = (request: LambdaRequest, context: any, call
         "headers": {
           "Content-Type": "application/json"
         },
-        "body": JSON.stringify(ret)
+        //"body": JSON.stringify(ret)
+        "body": ret
     })
 }
 
