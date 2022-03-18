@@ -54,9 +54,9 @@ Resources:
   StockHistoryManagementResource:
     Type: AWS::ApiGateway::Resource
     Properties: 
-      ParentId: !Ref RestApiRootResourceId
+      ParentId: !GetAtt RestApi.RootResourceId
       PathPart: stock-history-management
-      RestApiId: !Ref RestApiId
+      RestApiId: !Ref RestApi
 
   Lambda1:
     Type: AWS::CloudFormation::Stack
