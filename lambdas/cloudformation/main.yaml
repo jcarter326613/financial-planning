@@ -12,14 +12,6 @@ Resources:
   RestApi:
     Type: AWS::ApiGateway::RestApi
     Properties:
-      Body:
-        swagger: 2.0
-        info:
-          version: 1.0.0
-          title: FreeDays lambdas
-        basePath: /api
-        schemes:
-          - https
       Name: FreeDaysLambdas
       Parameters:
         endpointConfigurationTypes: REGIONAL
