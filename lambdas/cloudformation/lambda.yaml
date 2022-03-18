@@ -13,6 +13,9 @@ Parameters:
   InvocationRoleArn:
     Type: String
     Description: The ARN of the invocation role
+  Path:
+    Type: String
+    Description: The path to the rest call after the base path
   RestApiId:
     Type: String
     Description: The id of the rest api
@@ -41,7 +44,7 @@ Resources:
     Type: AWS::ApiGateway::Method
     Properties:
       HttpMethod: !Ref HttpMethod
-      ResourceId: !Ref RestApiRootResourceId
+      ResourceId: !Ref Resource
       RestApiId: !Ref RestApiId
       AuthorizationType: NONE
       Integration:
@@ -53,3 +56,10 @@ Resources:
           - - "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions"
             - !GetAtt Lambda.Arn
             - "invocations"
+
+  Resource:
+    Type: AWS::ApiGateway::Resource
+    Properties: 
+      ParentId: !Ref RestApiRootResourceId
+      PathPart: !Ref Path
+      RestApiId: !Ref RestApiId

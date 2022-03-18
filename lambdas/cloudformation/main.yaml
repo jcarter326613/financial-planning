@@ -59,7 +59,7 @@ Resources:
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi
         InvocationRoleArn: !GetAtt InvocationRole.Arn
-        RestApiRootResourceId: !GetAtt RestApi.RootResourceId
         EntryPoint: stockHistoryManagement.patch_addStockToTrack
+        Path: /stock-history-management/add
         HttpMethod: PATCH
       TemplateURL: ./lambda.yaml
