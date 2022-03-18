@@ -46,6 +46,17 @@ Resources:
                 Action: '*'
                 Resource: '*'
 
+  Deployment:
+    Type: 'AWS::ApiGateway::Deployment'
+    Properties:
+      RestApiId: !Ref RestApi
+
+  Stage:
+    Type: AWS::ApiGateway::Stage
+    Properties: 
+      DeploymentId: !Ref Deployment
+      RestApiId: !Ref RestApi
+
   ##
   # List of lambdas
   Lambda1:
