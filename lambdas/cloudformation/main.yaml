@@ -51,6 +51,13 @@ Resources:
 
   ##
   # List of lambdas
+  StockHistoryManagementResource:
+    Type: AWS::ApiGateway::Resource
+    Properties: 
+      ParentId: !Ref RestApiRootResourceId
+      PathPart: stock-history-management
+      RestApiId: !Ref RestApiId
+
   Lambda1:
     Type: AWS::CloudFormation::Stack
     Properties:
@@ -59,8 +66,8 @@ Resources:
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi
         InvocationRoleArn: !GetAtt InvocationRole.Arn
-        RestApiRootResourceId: !GetAtt RestApi.RootResourceId
+        RestApiRootResourceId: !Ref StockHistoryManagementResource
         EntryPoint: stockHistoryManagement.patch_addStockToTrack
-        Path: /stock-history-management/add
+        Path: add
         HttpMethod: PATCH
       TemplateURL: ./lambda.yaml
