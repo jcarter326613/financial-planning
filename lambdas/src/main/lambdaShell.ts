@@ -7,17 +7,17 @@ export const startCall = (args: any[], lambda: ((request: LambdaRequest) => any)
         throw Error(`Invalid start to lambda function.  ${args.length} parameters`)
     }
 
-    internalStartCall(args[0], args[1], args[2], lambda)
+    return internalStartCall(args[0], args[1], args[2], lambda)
 }
 
-const internalStartCall = (
+const internalStartCall = async (
     request: LambdaRequest, 
     _: any, 
     callback: ((_1: any,_2: any) => void),
     lambda: ((request: LambdaRequest) => any)
-    ): void => {
+    ): Promise<void> => {
 
-    let result = lambda(request)
+    let result = await lambda(request)
     callback(null, {
         "statusCode": 200,
         "headers": {
