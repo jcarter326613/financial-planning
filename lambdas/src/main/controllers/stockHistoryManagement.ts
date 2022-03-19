@@ -9,11 +9,15 @@ interface Response
     hello: string
 }
 
-class StockHistoryManagement
+export class StockHistoryManagement
 {
     public addStockToTrack(request: LambdaRequest): {"hello": string}
     {
-        let symbol = request.queryStringParameters["symbol"]
+        let symbol: string | null = null
+        if (request.queryStringParameters != null)
+        {
+            symbol = request.queryStringParameters["symbol"]
+        }
         if (symbol == null) throw new ArgumentsInvalidException("Missing query parameters, 'symbol'")
 
         return {"hello": "world"}
