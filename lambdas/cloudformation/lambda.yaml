@@ -60,7 +60,10 @@ Resources:
             Statement:
               - Effect: Allow
                 Action: 
-                  - 'ssm:GetParameter'
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - ssm:GetParameter
                 Resource: '*'
 
   LogsLogGroup:
