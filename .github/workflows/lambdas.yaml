@@ -48,7 +48,6 @@ jobs:
         run: |
           cd lambdas
           npm install --production
-          npm uninstall aws-sdk
           tsc
 
       - name: Package

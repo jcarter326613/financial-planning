@@ -12,10 +12,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.1092.0",
     "mongodb": "^4.4.1"
   },
   "devDependencies": {
+    "aws-sdk": "^2.1092.0",
     "@types/node": "^12.12.11",
     "@types/aws-lambda": "^8.10.93",
     "@types/mocha": "^9.1.0",
