@@ -5,7 +5,7 @@
   "description": "Financial Planning Lambdas",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r ts-node/register 'src/tests/**/*.ts' --timeout 5000",
+    "test": "./node_modules/.bin/ts-mocha -p ./tsconfig.json 'src/tests/**/*.ts' --timeout 5000",
     "build": "tsc"
   },
   "type": "commonjs",

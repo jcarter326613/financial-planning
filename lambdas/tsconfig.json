@@ -11,9 +11,6 @@
         "emitDecoratorMetadata": true,
         "skipLibCheck": true
     },
-    "ts-node": {
-      "files": true
-    },
     "include": ["./src/main/**/*"],
     "exclude": ["node_modules", "**/*.spec.ts", "./src/tests/**/*"]
 }

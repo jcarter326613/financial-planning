@@ -17,7 +17,7 @@ describe('Stock history management', () => {
             body: undefined
         }
 
-        let upsertMoc = sinon.fake(() => {})
+        let upsertMoc = sinon.fake((_1: any, _2: any, _3: any) => {})
         sinon.replace(Database.instance, "getStockHistoryConfigCollection", (): any => {
             return {
                 updateOne: upsertMoc
@@ -27,5 +27,6 @@ describe('Stock history management', () => {
         let result = await controller.addStockToTrack(request)
         expect(result.success).true
         expect(upsertMoc.calledOnce).true
+        expect(upsertMoc.calledOnceWith({ name: "IBM" }, { $set: { name: "IBM" } }, { upsert: true })).true
     })
 })
