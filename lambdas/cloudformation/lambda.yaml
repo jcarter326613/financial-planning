@@ -36,7 +36,7 @@ Resources:
       Runtime: "nodejs14.x"
       Handler: !Join
         - "/"
-        - - "out/controllers"
+        - - "out/main/controllers"
           - !Ref EntryPoint
       Timeout: 10
 
