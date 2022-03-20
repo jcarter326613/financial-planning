@@ -1,5 +1,6 @@
 import { LambdaRequest } from "./lambdaRequest"
 import { Database } from "./database"
+import { Secrets } from "./secrets"
 
 export const startCall = (args: any[], lambda: ((request: LambdaRequest) => any)) =>
 {
@@ -18,6 +19,7 @@ const internalStartCall = async (
     lambda: ((request: LambdaRequest) => any)
     ): Promise<void> => {
 
+    await Secrets.instance.initialize()
     await Database.instance.initialize()
     let result = await lambda(request)
     callback(null, {
