@@ -67,7 +67,7 @@ jobs:
 
       - name: Upload artifact
         run: |
-          aws s3 sync ./dist s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code --size-only --delete
+          aws s3 sync ./dist s3://${{ secrets.AWS_ACCOUNT_ID }}-financial-planning-lambda-code --size-only
 
       - name: Deploy Cloudformation Template
         run: |
