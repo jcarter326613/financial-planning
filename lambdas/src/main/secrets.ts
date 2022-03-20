@@ -6,6 +6,8 @@ export class Secrets
 
     public mongoDbConnectionString: string
 
+    private isInitialized = false
+
     public constructor()
     {
         this.mongoDbConnectionString = ""
@@ -13,6 +15,8 @@ export class Secrets
 
     public async initialize()
     {
+        if(this.isInitialized) return
+        this.isInitialized = true
         const ssm = new aws.SSM()
         let self = this
 

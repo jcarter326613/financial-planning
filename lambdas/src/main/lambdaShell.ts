@@ -19,7 +19,7 @@ const internalStartCall = async (
     _: any, 
     callback: ((_1: any,_2: any) => void),
     lambda: ((request: LambdaRequest) => any)
-    ): Promise<void> => {
+    ): Promise<any> => {
 
     console.log("internalStartCall t1")
     await Secrets.instance.initialize()
@@ -35,4 +35,11 @@ const internalStartCall = async (
         "body": JSON.stringify(result)
     })
     console.log("internalStartCall t4")
+    return {
+        "statusCode": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": JSON.stringify(result)
+    }
 }

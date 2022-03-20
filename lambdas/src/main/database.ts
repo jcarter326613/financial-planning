@@ -8,6 +8,7 @@ export class Database
     private databaseName = "main"
     private stockHistoryConfigCollectionName = "StockHistoryConfig"
     private stockHistoryConfigCollection: mongoDB.Collection | null = null
+    private isInitialized = false
 
     constructor()
     {
@@ -15,6 +16,8 @@ export class Database
 
     public async initialize()
     {
+        if(this.isInitialized) return
+        this.isInitialized = true
         let client = new mongoDB.MongoClient(Secrets.instance.mongoDbConnectionString)
         await client.connect()
         let db = client.db(this.databaseName)
