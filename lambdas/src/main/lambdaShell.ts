@@ -11,7 +11,7 @@ export const startCall = (args: any[], lambda: ((request: LambdaRequest) => any)
     }
     console.log("startCall t2")
 
-    return internalStartCall(args[0], args[1], args[2], lambda)
+    internalStartCall(args[0], args[1], args[2], lambda)
 }
 
 const internalStartCall = async (
