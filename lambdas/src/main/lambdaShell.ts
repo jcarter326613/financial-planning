@@ -1,4 +1,5 @@
 import { LambdaRequest } from "./lambdaRequest"
+import { Database } from "./database"
 
 export const startCall = (args: any[], lambda: ((request: LambdaRequest) => any)) =>
 {
@@ -7,6 +8,7 @@ export const startCall = (args: any[], lambda: ((request: LambdaRequest) => any)
         throw Error(`Invalid start to lambda function.  ${args.length} parameters`)
     }
 
+    Database.instance.initialize()
     return internalStartCall(args[0], args[1], args[2], lambda)
 }
 

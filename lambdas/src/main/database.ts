@@ -30,5 +30,5 @@ export class Database
         })
     }
 
-    public getStockHistoryConfigCollection = () => this.stockHistoryConfigCollection ?? (() => {throw new Error("Test")})()
+    public getStockHistoryConfigCollection = () => this.stockHistoryConfigCollection ?? (() => {throw new Error("Did not initialize database")})()
 }
