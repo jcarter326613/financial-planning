@@ -51,6 +51,44 @@ Resources:
       DeploymentId: !Ref Deployment
       RestApiId: !Ref RestApi
 
+  Dns:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: freedays.life.
+      RecordSets:
+      -
+        Name: api.freedays.life
+        Type: A
+        AliasTarget:
+          HostedZoneId: !GetAtt DomainName.RegionalHostedZoneId
+          DNSName: !GetAtt DomainName.RegionalDomainName
+
+  Certificate:      
+    Type: AWS::CertificateManager::Certificate
+    Properties: 
+      DomainName: api.freedays.life
+      DomainValidationOptions:
+        - DomainName: api.freedays.life
+          HostedZoneId: Z1010109YWO3304ER5BF
+      ValidationMethod: DNS
+
+  DomainName:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: api.freedays.life
+      DomainNameConfigurations:
+        - EndpointType: REGIONAL
+          CertificateArn: !Ref Certificate
+
+  BasePathMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    DependsOn: 
+      - DomainName
+    Properties:
+      DomainName: api.freedays.life
+      ApiId: !Ref RestApi
+      Stage: !Ref Stage
+
   ##
   # List of lambdas
   StockHistoryManagementResource:

@@ -2,7 +2,6 @@ import { ArgumentsInvalidException } from "../exceptions/argumentsInvalidExcepti
 import { Database } from "../database"
 import { LambdaRequest } from "../lambdaRequest"
 import { startCall } from "../lambdaShell"
-import * as mongoDB from "mongodb"
 
 export const patch_addStockToTrack = (...args: any[]) => startCall(args, instance.addStockToTrack)
 
@@ -13,8 +12,6 @@ interface Response
 
 export class StockHistoryManagement
 {
-    private databaseName = "main"
-
     public async addStockToTrack(request: LambdaRequest): Promise<{"success": boolean}>
     {
         // Validate the input

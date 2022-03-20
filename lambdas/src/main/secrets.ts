@@ -5,12 +5,10 @@ export class Secrets
     public static instance = new Secrets()
 
     public mongoDbConnectionString: string
-    public alphaVantageApiKey: string
 
     public constructor()
     {
         this.mongoDbConnectionString = ""
-        this.alphaVantageApiKey = ""
     }
 
     public async initialize()

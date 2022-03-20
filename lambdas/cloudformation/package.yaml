@@ -1,0 +1,122 @@
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  BucketName:
+    Type: String
+    Description: The name of the S3 bucket
+  ZipFileName:
+    Type: String
+    Description: The name of the zip file which contains the lambda code
+Resources:
+  RestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: FreeDaysLambdas
+      Parameters:
+        endpointConfigurationTypes: REGIONAL
+  InvocationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+            - apigateway.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Policies:
+      - PolicyName: LambdaRuntimePermissions
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action: '*'
+            Resource: '*'
+  Deployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+    - Lambda1
+    Properties:
+      RestApiId:
+        Ref: RestApi
+  Stage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId:
+        Ref: Deployment
+      RestApiId:
+        Ref: RestApi
+  Dns:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: freedays.life.
+      RecordSets:
+      - Name: api.freedays.life
+        Type: A
+        AliasTarget:
+          HostedZoneId:
+            Fn::GetAtt:
+            - DomainName
+            - RegionalHostedZoneId
+          DNSName:
+            Fn::GetAtt:
+            - DomainName
+            - RegionalDomainName
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: api.freedays.life
+      DomainValidationOptions:
+      - DomainName: api.freedays.life
+        HostedZoneId: Z1010109YWO3304ER5BF
+      ValidationMethod: DNS
+  DomainName:
+    Type: AWS::ApiGatewayV2::DomainName
+    Properties:
+      DomainName: api.freedays.life
+      DomainNameConfigurations:
+      - EndpointType: REGIONAL
+        CertificateArn:
+          Ref: Certificate
+  BasePathMapping:
+    Type: AWS::ApiGatewayV2::ApiMapping
+    DependsOn:
+    - DomainName
+    Properties:
+      DomainName: api.freedays.life
+      ApiId:
+        Ref: RestApi
+      Stage:
+        Ref: Stage
+  StockHistoryManagementResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+        - RestApi
+        - RootResourceId
+      PathPart: stock-history-management
+      RestApiId:
+        Ref: RestApi
+  Lambda1:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        BucketName:
+          Ref: BucketName
+        ZipFileName:
+          Ref: ZipFileName
+        RestApiId:
+          Ref: RestApi
+        InvocationRoleArn:
+          Fn::GetAtt:
+          - InvocationRole
+          - Arn
+        RestApiRootResourceId:
+          Ref: StockHistoryManagementResource
+        EntryPoint: stockHistoryManagement.patch_addStockToTrack
+        Path: add
+        HttpMethod: PATCH
+      TemplateURL: https://s3.amazonaws.com/203695469444-financial-planning-lambda-code/326f387971fdd43336711de302d7aa7e.template

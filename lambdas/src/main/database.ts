@@ -1,5 +1,4 @@
 import * as mongoDB from "mongodb"
-import { hasUncaughtExceptionCaptureCallback } from "process"
 import { Secrets } from "./secrets"
 
 export class Database
