@@ -2,7 +2,7 @@ import { LambdaRequest } from "./lambdaRequest"
 import { Database } from "./database"
 import { Secrets } from "./secrets"
 
-export const startCall = (args: any[], lambda: ((request: LambdaRequest) => any)) =>
+export const startCall = async (args: any[], lambda: ((request: LambdaRequest) => any)) =>
 {
     console.log("startCall t1")
     if (args.length != 3)
@@ -11,7 +11,7 @@ export const startCall = (args: any[], lambda: ((request: LambdaRequest) => any)
     }
     console.log("startCall t2")
 
-    internalStartCall(args[0], args[1], args[2], lambda)
+    return internalStartCall(args[0], args[1], args[2], lambda)
 }
 
 const internalStartCall = async (
@@ -27,13 +27,13 @@ const internalStartCall = async (
     console.log("internalStartCall t2")
     let result = await lambda(request)
     console.log("internalStartCall t3")
-    callback(null, {
+    /*callback(null, {
         "statusCode": 200,
         "headers": {
           "Content-Type": "application/json"
         },
         "body": JSON.stringify(result)
-    })
+    })*/
     console.log("internalStartCall t4")
     return {
         "statusCode": 200,

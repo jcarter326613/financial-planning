@@ -3,7 +3,7 @@ import { Database } from "../database"
 import { LambdaRequest } from "../lambdaRequest"
 import { startCall } from "../lambdaShell"
 
-export const patch_addStockToTrack = (...args: any[]) => startCall(args, instance.addStockToTrack)
+export const patch_addStockToTrack = async (...args: any[]) => startCall(args, instance.addStockToTrack)
 
 interface Response
 {
