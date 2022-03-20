@@ -8,7 +8,6 @@ export const startCall = (args: any[], lambda: ((request: LambdaRequest) => any)
         throw Error(`Invalid start to lambda function.  ${args.length} parameters`)
     }
 
-    Database.instance.initialize()
     return internalStartCall(args[0], args[1], args[2], lambda)
 }
 
@@ -19,6 +18,7 @@ const internalStartCall = async (
     lambda: ((request: LambdaRequest) => any)
     ): Promise<void> => {
 
+    await Database.instance.initialize()
     let result = await lambda(request)
     callback(null, {
         "statusCode": 200,
