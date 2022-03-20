@@ -9,11 +9,11 @@
             "request": "launch",
             "name": "Mocha Tests",
             "runtimeArgs": [
-              "${workspaceRoot}/node_modules/.bin/mocha",
+              "${workspaceRoot}/node_modules/.bin/ts-mocha",
+              "-p",
+              "${workspaceRoot}/tsconfig.json",
               "--inspect-brk",
-              "${relativeFile}",
-              "-r",
-              "ts-node/register"
+              "${relativeFile}"
             ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
