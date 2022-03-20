@@ -56,7 +56,8 @@ jobs:
           mkdir dist
           cd lambdas
           mv node_modules out
-          zip -r ../dist/lambdas-${{ github.sha }}.zip out/* -i *.js
+          mv package.json out
+          zip -r ../dist/lambdas-${{ github.sha }}.zip out/*
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
