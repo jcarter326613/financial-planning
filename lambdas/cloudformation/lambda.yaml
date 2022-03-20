@@ -40,6 +40,12 @@ Resources:
           - !Ref EntryPoint
       Timeout: 10
 
+  LogsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${Lambda}"
+      RetentionInDays: 7
+
   Method:
     Type: AWS::ApiGateway::Method
     Properties:

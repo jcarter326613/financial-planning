@@ -47,13 +47,15 @@ jobs:
       - name: Build the lambdas
         run: |
           cd lambdas
-          npm install
+          npm uninstall aws-sdk
+          npm install --production
           tsc
 
       - name: Package
         run: |
           mkdir dist
           cd lambdas
+          mv node_modules out
           zip -r ../dist/lambdas-${{ github.sha }}.zip out/* -i *.js
 
       - name: Configure AWS credentials
