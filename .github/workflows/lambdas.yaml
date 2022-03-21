@@ -47,8 +47,9 @@ jobs:
       - name: Build the lambdas
         run: |
           cd lambdas
-          npm install --production
+          npm install
           tsc
+          npm prune --production
           npm uninstall aws-sdk
 
       - name: Package
