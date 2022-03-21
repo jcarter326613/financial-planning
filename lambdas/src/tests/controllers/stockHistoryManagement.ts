@@ -2,7 +2,6 @@ import { expect } from "chai"
 import { StockHistoryManagement } from "../../main/controllers/stockHistoryManagement"
 import { Database } from "../../main/database"
 import * as sinon from "sinon"
-import * as mongoDB from "mongodb"
 
 describe('Stock history management', () => {
     beforeEach(() => {

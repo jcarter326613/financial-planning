@@ -2,7 +2,7 @@ import { LambdaRequest } from "./lambdaRequest"
 import { Database } from "./database"
 import { Secrets } from "./secrets"
 
-export const startCall = async (request: any, lambda: ((request: LambdaRequest) => any)): Promise<any> =>
+export const startCall = async <T>(request: any, lambda: ((request: LambdaRequest<T>) => any)): Promise<any> =>
 {
     await Secrets.instance.initialize()
     await Database.instance.initialize()

@@ -8,6 +8,8 @@ export class Database
     private databaseName = "main"
     private stockHistoryConfigCollectionName = "StockHistoryConfig"
     private stockHistoryConfigCollection: mongoDB.Collection | null = null
+    private accountCollectionName = "Account"
+    private accountCollection: mongoDB.Collection | null = null
     private isInitialized = false
 
     constructor()
@@ -24,6 +26,7 @@ export class Database
 
         // Get the collections
         this.stockHistoryConfigCollection = db.collection(this.stockHistoryConfigCollectionName)
+        this.accountCollection = db.collection(this.accountCollectionName)
 
         // Create the indexes
         await this.stockHistoryConfigCollection?.createIndex({
@@ -31,7 +34,14 @@ export class Database
         }, {
             "unique": true
         })
+
+        await this.accountCollection?.createIndex({
+            "username": 1
+        }, {
+            "unique": true
+        })
     }
 
     public getStockHistoryConfigCollection = () => this.stockHistoryConfigCollection ?? (() => {throw new Error("Did not initialize database")})()
+    public getAccountCollection = () => this.accountCollection ?? (() => {throw new Error("Did not initialize database")})()
 }

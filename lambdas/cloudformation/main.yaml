@@ -89,6 +89,18 @@ Resources:
       ApiId: !Ref RestApi
       Stage: !Ref Stage
 
+  Authorizer:
+    Type: AWS::ApiGateway::Authorizer
+    Properties: 
+      AuthorizerUri: -- insert the arn for the authorizer lambda
+      IdentitySource: method.request.header.Authorization
+      IdentityValidationExpression: ^(Bearer )[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)$
+      Name: JwtBearerToken
+      ProviderARNs: 
+        - String
+      RestApiId: !Ref RestApi
+      Type: TOKEN
+
   ##
   # List of lambdas
   StockHistoryManagementResource:
@@ -98,7 +110,7 @@ Resources:
       PathPart: stock-history-management
       RestApiId: !Ref RestApi
 
-  Lambda1:
+  LambdaStockHistoryManagementResource1:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
@@ -110,4 +122,25 @@ Resources:
         EntryPoint: stockHistoryManagement.patch_addStockToTrack
         Path: add
         HttpMethod: PATCH
+      TemplateURL: ./lambda.yaml
+
+  AccountResource:
+    Type: AWS::ApiGateway::Resource
+    Properties: 
+      ParentId: !GetAtt RestApi.RootResourceId
+      PathPart: account
+      RestApiId: !Ref RestApi
+
+  LambdaAccountResource1:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        BucketName: !Ref BucketName
+        ZipFileName: !Ref ZipFileName
+        RestApiId: !Ref RestApi
+        InvocationRoleArn: !GetAtt InvocationRole.Arn
+        RestApiRootResourceId: !Ref AccountResource
+        EntryPoint: account.post_create
+        Path: create
+        HttpMethod: POST
       TemplateURL: ./lambda.yaml
