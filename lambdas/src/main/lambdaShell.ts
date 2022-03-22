@@ -1,17 +1,46 @@
+import { ArgumentsInvalidException } from "./exceptions/argumentsInvalidException"
+import { Database } from "./services/database"
+import { HttpError } from "./exceptions/httpError"
 import { LambdaRequest } from "./lambdaRequest"
-import { Database } from "./database"
-import { Secrets } from "./secrets"
+import { Secrets } from "./services/secrets"
 
 export const startCall = async <T>(request: any, lambda: ((request: LambdaRequest<T>) => any)): Promise<any> =>
 {
     await Secrets.instance.initialize()
     await Database.instance.initialize()
-    let result = await lambda(request)
-    return {
-        "statusCode": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": JSON.stringify(result)
+    try
+    {
+        let result = await lambda(request)
+        return {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": JSON.stringify(result)
+        }
+    } 
+    catch (e) 
+    {
+        let code = 500
+        let message = "Unknown error"
+        if (e instanceof HttpError )
+        {
+            code = e.statusCode
+        }
+        else if (e instanceof ArgumentsInvalidException)
+        {
+            code = 400
+        }
+        if (e instanceof Error)
+        {
+            message = e.message
+        }
+        return {
+            "statusCode": code,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "body": JSON.stringify({message: message})
+        }
     }
 }

@@ -1,13 +1,9 @@
 import { expect } from "chai"
 import { StockHistoryManagement } from "../../main/controllers/stockHistoryManagement"
-import { Database } from "../../main/database"
+import { Database } from "../../main/services/database"
 import * as sinon from "sinon"
 
 describe('Stock history management', () => {
-    beforeEach(() => {
-        sinon.replace(Database.instance, "initialize", sinon.fake())
-    })
-
     it('base case', async () => {
         let controller = new StockHistoryManagement()
         let request = {

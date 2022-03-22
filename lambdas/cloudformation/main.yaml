@@ -144,3 +144,17 @@ Resources:
         Path: create
         HttpMethod: POST
       TemplateURL: ./lambda.yaml
+
+  LambdaAccountResource2:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        BucketName: !Ref BucketName
+        ZipFileName: !Ref ZipFileName
+        RestApiId: !Ref RestApi
+        InvocationRoleArn: !GetAtt InvocationRole.Arn
+        RestApiRootResourceId: !Ref AccountResource
+        EntryPoint: account.post_login
+        Path: login
+        HttpMethod: POST
+      TemplateURL: ./lambda.yaml

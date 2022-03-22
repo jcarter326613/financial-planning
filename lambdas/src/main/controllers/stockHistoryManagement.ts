@@ -1,5 +1,5 @@
 import { ArgumentsInvalidException } from "../exceptions/argumentsInvalidException"
-import { Database } from "../database"
+import { Database } from "../services/database"
 import { LambdaRequest } from "../lambdaRequest"
 import { startCall } from "../lambdaShell"
 

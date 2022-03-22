@@ -5,12 +5,16 @@ export class Secrets
     public static instance = new Secrets()
 
     public mongoDbConnectionString: string
+    public accessTokenSecret: string
+    public refreshTokenSecret: string
 
     private isInitialized = false
 
     public constructor()
     {
         this.mongoDbConnectionString = ""
+        this.accessTokenSecret = ""
+        this.refreshTokenSecret = ""
     }
 
     public async initialize()
@@ -18,9 +22,10 @@ export class Secrets
         if(this.isInitialized) return
         this.isInitialized = true
         const ssm = new aws.SSM()
-        let self = this
 
-        self.mongoDbConnectionString = await this.getParameter(ssm, "/freedays/mongoDb/connectionString")
+        this.mongoDbConnectionString = await this.getParameter(ssm, "/freedays/mongoDb/connectionString")
+        this.accessTokenSecret = await this.getParameter(ssm, "/freedays/accessTokenSecret")
+        this.refreshTokenSecret = await this.getParameter(ssm, "/freedays/refreshTokenSecret")
     }
 
     private async getParameter(ssm: aws.SSM, name: string): Promise<string>
