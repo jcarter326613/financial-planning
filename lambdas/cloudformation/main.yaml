@@ -92,7 +92,10 @@ Resources:
   Authorizer:
     Type: AWS::ApiGateway::Authorizer
     Properties: 
-      AuthorizerUri: -- insert the arn for the authorizer lambda
+      AuthorizerUri: 
+        Fn::GetAtt: 
+        - LambdaAuthorizer
+        - Outputs.LambdaArn
       IdentitySource: method.request.header.Authorization
       IdentityValidationExpression: ^(Bearer )[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)$
       Name: JwtBearerToken
@@ -100,6 +103,20 @@ Resources:
         - String
       RestApiId: !Ref RestApi
       Type: TOKEN
+
+  LambdaAuthorizer:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        BucketName: !Ref BucketName
+        ZipFileName: !Ref ZipFileName
+        EntryPoint: account.post_create
+        RestApiId: ""
+        InvocationRoleArn: ""
+        RestApiRootResourceId: ""
+        Path: ""
+        HttpMethod: ""
+      TemplateURL: ./lambda.yaml
 
   ##
   # List of lambdas

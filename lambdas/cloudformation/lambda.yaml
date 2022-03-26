@@ -26,6 +26,12 @@ Parameters:
     Type: String
     Description: The name of the zip file which contains the lambda code
 
+Conditions:
+  HasRestApi: !Not
+    - !Equals
+      - !Ref RestApiId
+      - ""
+
 Resources:
   Lambda:
     Type: AWS::Serverless::Function
@@ -73,6 +79,7 @@ Resources:
 
   Method:
     Type: AWS::ApiGateway::Method
+    Condition: HasRestApi
     Properties:
       HttpMethod: !Ref HttpMethod
       ResourceId: !Ref Resource
@@ -90,7 +97,13 @@ Resources:
 
   Resource:
     Type: AWS::ApiGateway::Resource
+    Condition: HasRestApi
     Properties: 
       ParentId: !Ref RestApiRootResourceId
       PathPart: !Ref Path
       RestApiId: !Ref RestApiId
+
+Outputs:
+  LambdaArn:
+    Description: The lambda of the ARN created by this stack
+    Value: !GetAtt Lambda.Arn
