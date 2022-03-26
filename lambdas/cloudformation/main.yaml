@@ -41,7 +41,7 @@ Resources:
   Deployment:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:
-      - Lambda1
+      - LambdaAccountResource1
     Properties:
       RestApiId: !Ref RestApi
 
