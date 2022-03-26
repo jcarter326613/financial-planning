@@ -10,6 +10,7 @@ import { ObjectId } from "mongodb"
 
 export const post_create = async (request: any) => startCall(request, instance.create)
 export const post_login = async (request: any) => startCall(request, instance.login)
+export const post_authorize = async (request: any) => startCall(request, instance.authorize)
 
 export class Account
 {
@@ -79,6 +80,13 @@ export class Account
             refreshTokenExpirationMinutes: Authentication.instance.refreshTokenExpirationMinutes()
         }
     }
+
+    public async authorize(request: LambdaRequest<void>): Promise<AuthorizeResponse>
+    {
+        return {
+            
+        }
+    }
 }
 
 const instance = new Account()
@@ -110,6 +118,11 @@ interface LoginAccountResponse
     accessTokenExpirationMinutes: number
     refreshToken: string
     refreshTokenExpirationMinutes: number
+}
+
+interface AuthorizeResponse
+{
+
 }
 
 /**

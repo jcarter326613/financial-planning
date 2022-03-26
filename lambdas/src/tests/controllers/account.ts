@@ -9,7 +9,7 @@ describe('Account management', () => {
     let findMoc = sinon.fake((lookup: {username: string}) => {
         if (lookup.username == "dupUser")
         {
-            return {username: "testUsername", hashedPassword: "sefsoesfoj"}
+            return {username: "dupUser", hashedPassword: "sefsoesfoj"}
         }
         return null
     })
@@ -25,6 +25,7 @@ describe('Account management', () => {
 
     beforeEach(() => {
         insertMoc.resetHistory()
+        findMoc.resetHistory()
     })
 
     it('create account', async () => {
