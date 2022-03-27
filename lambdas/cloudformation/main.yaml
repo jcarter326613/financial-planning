@@ -111,7 +111,7 @@ Resources:
         AuthorizerId: ""
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
-        EntryPoint: account.post_create
+        EntryPoint: account.post_authorize
         RestApiId: ""
         InvocationRoleArn: ""
         RestApiRootResourceId: ""
