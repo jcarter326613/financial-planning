@@ -132,7 +132,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        AuthorizerId: JwtBearerToken
+        AuthorizerId: !Ref Authorizer
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi
