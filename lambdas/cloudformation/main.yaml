@@ -1,4 +1,3 @@
-Transform: AWS::Serverless-2016-10-31
 
 Parameters:
   BucketName:
@@ -9,173 +8,15 @@ Parameters:
     Description: The name of the zip file which contains the lambda code
 
 Resources:
-  RestApi:
-    Type: AWS::ApiGateway::RestApi
-    Properties:
-      Name: FreeDaysLambdas
-      Parameters:
-        endpointConfigurationTypes: REGIONAL
-
-  InvocationRole:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service: 
-                - lambda.amazonaws.com
-                - apigateway.amazonaws.com
-            Action:
-              - 'sts:AssumeRole'
-      Policies:
-        - PolicyName: LambdaRuntimePermissions
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action: '*'
-                Resource: '*'
-
-  Deployment:
-    Type: 'AWS::ApiGateway::Deployment'
-    DependsOn:
-      - LambdaAccountResource1
-    Properties:
-      RestApiId: !Ref RestApi
-
-  Stage:
-    Type: AWS::ApiGateway::Stage
-    Properties: 
-      DeploymentId: !Ref Deployment
-      RestApiId: !Ref RestApi
-
-  Dns:
-    Type: AWS::Route53::RecordSetGroup
-    Properties:
-      HostedZoneName: freedays.life.
-      RecordSets:
-      -
-        Name: api.freedays.life
-        Type: A
-        AliasTarget:
-          HostedZoneId: !GetAtt DomainName.RegionalHostedZoneId
-          DNSName: !GetAtt DomainName.RegionalDomainName
-
-  Certificate:      
-    Type: AWS::CertificateManager::Certificate
-    Properties: 
-      DomainName: api.freedays.life
-      DomainValidationOptions:
-        - DomainName: api.freedays.life
-          HostedZoneId: Z1010109YWO3304ER5BF
-      ValidationMethod: DNS
-
-  DomainName:
-    Type: AWS::ApiGatewayV2::DomainName
-    Properties:
-      DomainName: api.freedays.life
-      DomainNameConfigurations:
-        - EndpointType: REGIONAL
-          CertificateArn: !Ref Certificate
-
-  BasePathMapping:
-    Type: AWS::ApiGatewayV2::ApiMapping
-    DependsOn: 
-      - DomainName
-    Properties:
-      DomainName: api.freedays.life
-      ApiId: !Ref RestApi
-      Stage: !Ref Stage
-
-  Authorizer:
-    Type: AWS::ApiGateway::Authorizer
-    Properties: 
-      AuthorizerUri: 
-        Fn::GetAtt: 
-        - LambdaAuthorizer
-        - Outputs.LambdaUri
-      IdentitySource: method.request.header.Authorization
-      IdentityValidationExpression: ^(Bearer )[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)$
-      Name: JwtBearerToken
-      ProviderARNs: 
-        - String
-      RestApiId: !Ref RestApi
-      Type: TOKEN
-
-  LambdaAuthorizer:
+  ApiGateway:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        AuthorizerId: ""
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
-        EntryPoint: account.post_authorize
-        RestApiId: ""
-        InvocationRoleArn: ""
-        RestApiRootResourceId: ""
-        Path: ""
-        HttpMethod: ""
-      TemplateURL: ./lambda.yaml
+      TemplateURL: ./api-gateway.yaml
 
-  ##
-  # List of lambdas
-  StockHistoryManagementResource:
-    Type: AWS::ApiGateway::Resource
-    Properties: 
-      ParentId: !GetAtt RestApi.RootResourceId
-      PathPart: stock-history-management
-      RestApiId: !Ref RestApi
-
-  LambdaStockHistoryManagementResource1:
+  Database:
     Type: AWS::CloudFormation::Stack
     Properties:
-      Parameters:
-        AuthorizerId: !Ref Authorizer
-        BucketName: !Ref BucketName
-        ZipFileName: !Ref ZipFileName
-        RestApiId: !Ref RestApi
-        InvocationRoleArn: !GetAtt InvocationRole.Arn
-        RestApiRootResourceId: !Ref StockHistoryManagementResource
-        EntryPoint: stockHistoryManagement.patch_addStockToTrack
-        Path: add
-        HttpMethod: PATCH
-      TemplateURL: ./lambda.yaml
-
-  AccountResource:
-    Type: AWS::ApiGateway::Resource
-    Properties: 
-      ParentId: !GetAtt RestApi.RootResourceId
-      PathPart: account
-      RestApiId: !Ref RestApi
-
-  LambdaAccountResource1:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      Parameters:
-        AuthorizerId: ""
-        BucketName: !Ref BucketName
-        ZipFileName: !Ref ZipFileName
-        RestApiId: !Ref RestApi
-        InvocationRoleArn: !GetAtt InvocationRole.Arn
-        RestApiRootResourceId: !Ref AccountResource
-        EntryPoint: account.post_create
-        Path: create
-        HttpMethod: POST
-      TemplateURL: ./lambda.yaml
-
-  LambdaAccountResource2:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      Parameters:
-        AuthorizerId: ""
-        BucketName: !Ref BucketName
-        ZipFileName: !Ref ZipFileName
-        RestApiId: !Ref RestApi
-        InvocationRoleArn: !GetAtt InvocationRole.Arn
-        RestApiRootResourceId: !Ref AccountResource
-        EntryPoint: account.post_login
-        Path: login
-        HttpMethod: POST
-      TemplateURL: ./lambda.yaml
+      TemplateURL: ./database.yaml
