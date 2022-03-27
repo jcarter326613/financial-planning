@@ -5,6 +5,13 @@ Resources:
     Properties:
       TableName: FreeDays_Account
       BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: _id
+          AttributeType: S
+        - AttributeName: username
+          AttributeType: S
+        - AttributeName: hashedPassword
+          AttributeType: S
       KeySchema: 
-        - AttributeName: "_id"
+        - AttributeName: _id
           KeyType: HASH
