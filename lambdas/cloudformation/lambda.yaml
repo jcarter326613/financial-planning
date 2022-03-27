@@ -55,8 +55,8 @@ Resources:
       Timeout: 10
       Environment:
         Variables:
-          - AwsAccountId: AWS::AccountId
-          - RestApiId: !Ref RestApiId
+          AwsAccountId: AWS::AccountId
+          RestApiId: !Ref RestApiId
 
   LambdaRuntimeRole:
     Type: AWS::IAM::Role
