@@ -108,6 +108,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
+        AuthorizationId: ""
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         EntryPoint: account.post_create
