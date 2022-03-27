@@ -56,6 +56,7 @@ Resources:
         - - "out/main/controllers"
           - !Ref EntryPoint
       Role: !GetAtt LambdaRuntimeRole.Arn
+      MemorySize: 256
       Timeout: 10
       Environment:
         Variables:
