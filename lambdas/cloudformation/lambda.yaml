@@ -46,6 +46,10 @@ Resources:
       CodeUri: 
         Bucket: !Ref BucketName
         Key: !Ref ZipFileName
+      FunctionName: !Join
+        - "-"
+        - - FreeDays
+          - !Ref EntryPoint
       Runtime: "nodejs14.x"
       Handler: !Join
         - "/"
