@@ -49,7 +49,7 @@ Resources:
       FunctionName: !Join
         - "-"
         - - FreeDays
-          - !Ref EntryPoint
+          - !Join [ '-', !Split [ '.', !Ref EntryPoint ] ]
       Runtime: "nodejs14.x"
       Handler: !Join
         - "/"
