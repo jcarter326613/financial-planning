@@ -10,8 +10,13 @@ Resources:
           AttributeType: S
         - AttributeName: username
           AttributeType: S
-        - AttributeName: hashedPassword
-          AttributeType: S
       KeySchema: 
         - AttributeName: _id
           KeyType: HASH
+      LocalSecondaryIndexes:
+        - IndexName: Unique_username
+          KeySchema:
+            - AttributeName: username
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
