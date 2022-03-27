@@ -33,6 +33,7 @@ describe('Account management', () => {
         let request = {
             queryStringParameters: undefined,
             pathParameters: undefined,
+            headers: undefined,
             body: {
                 username: "testUsername",
                 password: "testPassword"
@@ -52,6 +53,7 @@ describe('Account management', () => {
         let request = {
             queryStringParameters: undefined,
             pathParameters: undefined,
+            headers: undefined,
             body: {
                 username: "dupUser",
                 password: "testPassword"

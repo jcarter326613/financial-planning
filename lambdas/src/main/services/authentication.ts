@@ -6,8 +6,8 @@ export class Authentication
 {
     public static instance: Authentication = new Authentication()
 
-    public accessTokenExpirationMinutes = ():number => 15
-    public refreshTokenExpirationMinutes = ():number => 30
+    public accessTokenExpirationMinutes = 15
+    public refreshTokenExpirationMinutes = 30
 
     private accessTokenSecret: string | undefined
     private refreshTokenSecret: string | undefined

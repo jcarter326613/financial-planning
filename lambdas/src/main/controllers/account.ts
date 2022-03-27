@@ -77,9 +77,9 @@ export class Account
         const refreshToken = Authentication.instance.generateRefreshToken(userDto._id.toString())
         return {
             accessToken: accessToken, 
-            accessTokenExpirationMinutes: Authentication.instance.accessTokenExpirationMinutes(),
+            accessTokenExpirationMinutes: Authentication.instance.accessTokenExpirationMinutes,
             refreshToken: refreshToken,
-            refreshTokenExpirationMinutes: Authentication.instance.refreshTokenExpirationMinutes()
+            refreshTokenExpirationMinutes: Authentication.instance.refreshTokenExpirationMinutes
         }
     }
 
