@@ -12,7 +12,7 @@ Resources:
           AttributeType: S
       KeySchema: 
         - AttributeName: _id
-          KeyType: HASH
+          KeyType: RANGE
       LocalSecondaryIndexes:
         - IndexName: Unique_username
           KeySchema:
