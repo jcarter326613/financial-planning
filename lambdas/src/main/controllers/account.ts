@@ -1,9 +1,11 @@
 import { ArgumentsInvalidException } from "../exceptions/argumentsInvalidException"
-import { Authentication } from "../services/authentication"
+import { Authentication, TokenType as AuthTokenType } from "../services/authentication"
 import { Database } from "../services/database"
 import { HttpError } from "../exceptions/httpError"
 import { LambdaRequest } from "../lambdaRequest"
 import { startCall } from "../lambdaShell"
+import { Secrets } from "../services/secrets"
+import { UnauthorizedException } from "../exceptions/unauthorizedException"
 
 import * as bcrypt from "bcrypt"
 import { ObjectId } from "mongodb"
@@ -83,9 +85,31 @@ export class Account
 
     public async authorize(request: LambdaRequest<void>): Promise<AuthorizeResponse>
     {
-        // https://www.alexdebrie.com/posts/lambda-custom-authorizers/
-        return {
+        // Designed according to https://www.alexdebrie.com/posts/lambda-custom-authorizers/
 
+        // Extract the user id
+        if (request.headers == null) throw new UnauthorizedException()
+        const userId = Authentication.instance.verifyAuthentication(request.headers["authorization"], AuthTokenType.Auth)
+        if (userId == null) throw new UnauthorizedException()
+
+        // Return the authenticated user details
+        const awsAccountId = process.env.AwsAccountId
+        const restApiId = process.env.RestApiId
+        return {
+            "principalId": userId,
+            "policyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Action": "execute-api:Invoke",
+                        "Effect": "Allow",
+                        "Resource": `arn:aws:execute-api:us-east-1:${awsAccountId}:${restApiId}/*`
+                    }
+                ]
+            },
+            "context": {
+                "userId": userId
+            }
         }
     }
 }
@@ -123,7 +147,16 @@ interface LoginAccountResponse
 
 interface AuthorizeResponse
 {
-
+    principalId: string
+    policyDocument: {
+        Version: string,
+        Statement: Array<{
+            Action: string,
+            Effect: string,
+            Resource: string
+        }>
+    }
+    context: Record<string, string>
 }
 
 /**

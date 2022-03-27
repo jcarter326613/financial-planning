@@ -1,4 +1,5 @@
 import * as jwt from "jsonwebtoken"
+import { LambdaRequest } from "../lambdaRequest"
 import { Secrets } from "./secrets"
 
 export class Authentication
@@ -84,10 +85,25 @@ export class Authentication
 
         return userId
     }
+
+    public getDecodedUserData(request: LambdaRequest): UserData
+    {
+        console.log("getDecodeUserData: " + JSON.stringify(request))
+        return {
+            id: "123",
+            username: "testUserName"
+        }
+    }
 }
 
 export enum TokenType
 {
     Auth = 1,
     Refresh
+}
+
+export interface UserData
+{
+    id: string
+    username: string
 }

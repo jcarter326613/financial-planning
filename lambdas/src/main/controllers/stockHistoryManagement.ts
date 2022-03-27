@@ -1,4 +1,5 @@
 import { ArgumentsInvalidException } from "../exceptions/argumentsInvalidException"
+import { Authentication } from "../services/authentication"
 import { Database } from "../services/database"
 import { LambdaRequest } from "../lambdaRequest"
 import { startCall } from "../lambdaShell"
@@ -9,6 +10,8 @@ export class StockHistoryManagement
 {
     public async addStockToTrack(request: LambdaRequest): Promise<{"success": boolean}>
     {
+        const user = Authentication.instance.getDecodedUserData(request)
+
         // Validate the input
         let symbol: string | null = null
         if (request.queryStringParameters != null)

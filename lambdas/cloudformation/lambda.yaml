@@ -1,6 +1,9 @@
 Transform: AWS::Serverless-2016-10-31
 
 Parameters:
+  AuthorizationId:
+    Type: String
+    Description: The id for the authorization to use for this lambda or "" for none
   BucketName:
     Type: String
     Description: The name of the S3 bucket
@@ -31,6 +34,10 @@ Conditions:
     - !Equals
       - !Ref RestApiId
       - ""
+  DoAuthorization: !Not
+    - !Equals
+      - !Ref AuthorizationId
+      - ""
 
 Resources:
   Lambda:
@@ -46,6 +53,10 @@ Resources:
           - !Ref EntryPoint
       Role: !GetAtt LambdaRuntimeRole.Arn
       Timeout: 10
+      Environment:
+        Variables:
+          - AwsAccountId: AWS::AccountId
+          - RestApiId: !Ref RestApiId
 
   LambdaRuntimeRole:
     Type: AWS::IAM::Role
@@ -84,7 +95,12 @@ Resources:
       HttpMethod: !Ref HttpMethod
       ResourceId: !Ref Resource
       RestApiId: !Ref RestApiId
-      AuthorizationType: NONE
+      AuthorizationType: !If DoAuthorization
+        - CUSTOM
+        - NONE
+      AuthorizationId: !If DoAuthorization
+        - !Ref AuthorizationId
+        - AWS::NoValue
       Integration:
         Credentials: !Ref InvocationRoleArn
         IntegrationHttpMethod: POST

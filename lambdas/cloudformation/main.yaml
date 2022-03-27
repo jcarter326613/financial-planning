@@ -131,6 +131,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
+        AuthorizationId: JwtBearerToken
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi
@@ -152,6 +153,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
+        AuthorizationId: ""
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi
@@ -166,6 +168,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
+        AuthorizationId: ""
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi
