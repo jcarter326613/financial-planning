@@ -95,10 +95,12 @@ Resources:
       HttpMethod: !Ref HttpMethod
       ResourceId: !Ref Resource
       RestApiId: !Ref RestApiId
-      AuthorizationType: !If DoAuthorization
+      AuthorizationType: !If 
+        - DoAuthorization
         - CUSTOM
         - NONE
-      AuthorizationId: !If DoAuthorization
+      AuthorizationId: !If
+        - DoAuthorization
         - !Ref AuthorizationId
         - AWS::NoValue
       Integration:
