@@ -11,6 +11,7 @@ export const startCall = async <T>(request: any, lambda: ((request: LambdaReques
     try
     {
         console.info(`Request: ${JSON.stringify(request)}`)
+        request.body = JSON.parse(request.body)
         const result = await lambda(request)
         const resultString = JSON.stringify(result)
         console.info(`Returning success: ${resultString}`)
