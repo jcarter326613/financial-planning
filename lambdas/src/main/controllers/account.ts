@@ -83,8 +83,9 @@ export class Account
 
     public async authorize(request: LambdaRequest<void>): Promise<AuthorizeResponse>
     {
+        // https://www.alexdebrie.com/posts/lambda-custom-authorizers/
         return {
-            
+
         }
     }
 }

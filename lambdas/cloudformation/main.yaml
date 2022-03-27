@@ -95,7 +95,7 @@ Resources:
       AuthorizerUri: 
         Fn::GetAtt: 
         - LambdaAuthorizer
-        - Outputs.LambdaArn
+        - Outputs.LambdaUri
       IdentitySource: method.request.header.Authorization
       IdentityValidationExpression: ^(Bearer )[a-zA-Z0-9\-_]+?\.[a-zA-Z0-9\-_]+?\.([a-zA-Z0-9\-_]+)$
       Name: JwtBearerToken

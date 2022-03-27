@@ -107,3 +107,10 @@ Outputs:
   LambdaArn:
     Description: The lambda of the ARN created by this stack
     Value: !GetAtt Lambda.Arn
+  LambdaUri:
+    Description: The URI of the lambda function
+    Value: !Join
+      - "/"
+      - - "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions"
+        - !GetAtt Lambda.Arn
+        - "invocations"
