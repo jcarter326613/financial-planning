@@ -10,17 +10,21 @@ export const startCall = async <T>(request: any, lambda: ((request: LambdaReques
     await Database.instance.initialize()
     try
     {
-        let result = await lambda(request)
+        console.info(`Request: ${JSON.stringify(request)}`)
+        const result = await lambda(request)
+        const resultString = JSON.stringify(result)
+        console.info(`Returning success: ${resultString}`)
         return {
             "statusCode": 200,
             "headers": {
                 "Content-Type": "application/json"
             },
-            "body": JSON.stringify(result)
+            "body": resultString
         }
     } 
     catch (e) 
     {
+        console.error(`Returning error: ${JSON.stringify(e)}`)
         let code = 500
         let message = "Unknown error"
         if (e instanceof HttpError )
