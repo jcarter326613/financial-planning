@@ -108,7 +108,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        AuthorizationId: ""
+        AuthorizerId: ""
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         EntryPoint: account.post_create
@@ -132,7 +132,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        AuthorizationId: JwtBearerToken
+        AuthorizerId: JwtBearerToken
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi
@@ -154,7 +154,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        AuthorizationId: ""
+        AuthorizerId: ""
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi
@@ -169,7 +169,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        AuthorizationId: ""
+        AuthorizerId: ""
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi

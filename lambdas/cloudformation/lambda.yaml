@@ -1,7 +1,7 @@
 Transform: AWS::Serverless-2016-10-31
 
 Parameters:
-  AuthorizationId:
+  AuthorizerId:
     Type: String
     Description: The id for the authorization to use for this lambda or "" for none
   BucketName:
@@ -36,7 +36,7 @@ Conditions:
       - ""
   DoAuthorization: !Not
     - !Equals
-      - !Ref AuthorizationId
+      - !Ref AuthorizerId
       - ""
 
 Resources:
@@ -99,9 +99,9 @@ Resources:
         - DoAuthorization
         - CUSTOM
         - NONE
-      AuthorizationId: !If
+      AuthorizerId: !If
         - DoAuthorization
-        - !Ref AuthorizationId
+        - !Ref AuthorizerId
         - AWS::NoValue
       Integration:
         Credentials: !Ref InvocationRoleArn
