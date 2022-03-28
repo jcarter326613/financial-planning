@@ -1,6 +1,6 @@
 import { ArgumentsInvalidException } from "../exceptions/argumentsInvalidException"
 import { Authentication, TokenType as AuthTokenType } from "../services/authentication"
-import { Database } from "../services/database"
+import { Database, ObjectId } from "../services/database"
 import { HttpError } from "../exceptions/httpError"
 import { LambdaRequest } from "../lambdaRequest"
 import { startCall } from "../lambdaShell"
@@ -8,7 +8,6 @@ import { Secrets } from "../services/secrets"
 import { UnauthorizedException } from "../exceptions/unauthorizedException"
 
 import * as bcrypt from "bcrypt"
-import { ObjectId } from "mongodb"
 
 export const post_create = async (request: any) => startCall(request, instance.create)
 export const post_login = async (request: any) => startCall(request, instance.login)
@@ -45,7 +44,7 @@ export class Account
                 username: username, 
                 hashedPassword: hashedPassword
             }
-            collection.insertOne(dbObject)
+            await collection.insertOne(dbObject)
             return {"success": true, "message": undefined}
         }
         catch (e: any)

@@ -26,7 +26,7 @@ export class StockHistoryManagement
         const query = { name: symbol };
         const update = { $set: { name: symbol } };
         const options = { upsert: true };
-        collection.updateOne(query, update, options);
+        await collection.updateOne(query, update, options);
 
         return {"success": true}
     }

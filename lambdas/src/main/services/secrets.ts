@@ -4,7 +4,6 @@ export class Secrets
 {
     public static instance = new Secrets()
 
-    public mongoDbConnectionString: string
     public accessTokenSecret: string
     public refreshTokenSecret: string
 
@@ -12,7 +11,6 @@ export class Secrets
 
     public constructor()
     {
-        this.mongoDbConnectionString = ""
         this.accessTokenSecret = ""
         this.refreshTokenSecret = ""
     }
@@ -23,7 +21,6 @@ export class Secrets
         this.isInitialized = true
         const ssm = new aws.SSM()
 
-        this.mongoDbConnectionString = await this.getParameter(ssm, "/freedays/mongoDb/connectionString")
         this.accessTokenSecret = await this.getParameter(ssm, "/freedays/accessTokenSecret")
         this.refreshTokenSecret = await this.getParameter(ssm, "/freedays/refreshTokenSecret")
     }

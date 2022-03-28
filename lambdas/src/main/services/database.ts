@@ -1,16 +1,15 @@
-import * as mongoDB from "mongodb"
 import { Secrets } from "./secrets"
+import * as aws from "aws-sdk"
+import { hasUncaughtExceptionCaptureCallback } from "process"
 
 export class Database
 {
     public static instance: Database = new Database()
 
-    private databaseName = "main"
     private stockHistoryConfigCollectionName = "StockHistoryConfig"
-    private stockHistoryConfigCollection: mongoDB.Collection | null = null
     private accountCollectionName = "Account"
-    private accountCollection: mongoDB.Collection | null = null
     private isInitialized = false
+    private db: aws.DynamoDB | undefined
 
     constructor()
     {
@@ -18,30 +17,66 @@ export class Database
 
     public async initialize()
     {
-        if(this.isInitialized) return
+        if (this.isInitialized) { return }
         this.isInitialized = true
-        let client = new mongoDB.MongoClient(Secrets.instance.mongoDbConnectionString)
-        await client.connect()
-        let db = client.db(this.databaseName)
+        aws.config.update({
+            region: "us-east-1"
+        });
 
-        // Get the collections
-        this.stockHistoryConfigCollection = db.collection(this.stockHistoryConfigCollectionName)
-        this.accountCollection = db.collection(this.accountCollectionName)
-
-        // Create the indexes
-        await this.stockHistoryConfigCollection?.createIndex({
-            "symbol": 1
-        }, {
-            "unique": true
-        })
-
-        await this.accountCollection?.createIndex({
-            "username": 1
-        }, {
-            "unique": true
-        })
+        this.db = new aws.DynamoDB({apiVersion: '2012-08-10'})
     }
 
-    public getStockHistoryConfigCollection = () => this.stockHistoryConfigCollection ?? (() => {throw new Error("Did not initialize database")})()
-    public getAccountCollection = () => this.accountCollection ?? (() => {throw new Error("Did not initialize database")})()
+    public getStockHistoryConfigCollection(): Collection
+    {
+        if (this.db == null) { throw new Error("Database not initialized") }
+        return new Collection(this.stockHistoryConfigCollectionName, this.db)
+    }
+
+    public getAccountCollection(): Collection
+    {
+        if (this.db == null) { throw new Error("Database not initialized") }
+        return new Collection(this.accountCollectionName, this.db)
+    }
 }
+
+export class Collection
+{
+    private tableName: string
+    private db: aws.DynamoDB
+
+    constructor(tableName: string, db: aws.DynamoDB)
+    {
+        this.tableName = tableName
+        this.db = db
+    }
+
+    public async findOne<T = any>(filter: any): Promise<T>
+    {
+        const result = await this.db.getItem(filter).promise()
+        return result.Item as unknown as T
+    }
+
+    public async insertOne(item: any): Promise<any>
+    {
+        return this.db.putItem(item).promise()
+    }
+
+    public async updateOne(query: any, update: any, options: any): Promise<any>
+    {
+        if (options.upsert == null || options.upsert != true)
+        {
+            throw new Error("Can not updateOne without upsert = true")
+        }
+        if (update["$set"] == null)
+        {
+            throw new Error("Can update update without $set")
+        }
+        const finalObject = {
+            ...query,
+            ...update["$set"]
+        }
+        return this.db.putItem(finalObject).promise()
+    }
+}
+
+export type ObjectId = string
