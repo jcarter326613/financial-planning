@@ -15,3 +15,8 @@ Resources:
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
       TemplateURL: ./api-gateway.yaml
+
+  Database:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ./database.yaml

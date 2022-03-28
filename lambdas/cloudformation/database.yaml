@@ -13,14 +13,10 @@ Resources:
       KeySchema: 
         - AttributeName: _id
           KeyType: HASH
-        - AttributeName: username
-          KeyType: RANGE
-      LocalSecondaryIndexes:
+      GlobalSecondaryIndexes:
         - IndexName: Unique_username
           KeySchema:
             - AttributeName: username
               KeyType: HASH
-            - AttributeName: _id
-              KeyType: RANGE
           Projection:
             ProjectionType: ALL
