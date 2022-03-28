@@ -9,6 +9,7 @@ describe('Stock history management', () => {
         let request = {
             queryStringParameters: { "symbol": "IBM" },
             pathParameters: undefined,
+            headers: undefined,
             body: undefined
         }
 
