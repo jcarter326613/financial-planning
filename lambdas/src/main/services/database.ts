@@ -50,6 +50,7 @@ export class Collection
 
     public async findOne<T = any>(filter: any): Promise<T>
     {
+        console.info(`Finding document: ${JSON.stringify(filter)}`)
         const result = await this.db.getItem(filter).promise()
         return result.Item as unknown as T
     }
@@ -78,6 +79,7 @@ export class Collection
             TableName: this.tableName,
             Item: insertableItem
         }
+        console.info(`Inserting document: ${JSON.stringify(document)}`)
         return this.db.putItem(document).promise()
     }
 
@@ -95,6 +97,7 @@ export class Collection
             ...query,
             ...update["$set"]
         }
+        console.info(`Updating document: ${JSON.stringify(finalObject)}`)
         return this.db.putItem(finalObject).promise()
     }
 }
