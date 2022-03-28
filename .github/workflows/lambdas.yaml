@@ -48,6 +48,7 @@ jobs:
         run: |
           cd lambdas
           npm install
+          npm test
           tsc
           npm prune --production
           npm uninstall aws-sdk

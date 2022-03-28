@@ -1,6 +1,4 @@
-import { Secrets } from "./secrets"
 import * as aws from "aws-sdk"
-import { hasUncaughtExceptionCaptureCallback } from "process"
 
 export class Database
 {
@@ -58,7 +56,29 @@ export class Collection
 
     public async insertOne(item: any): Promise<any>
     {
-        return this.db.putItem(item).promise()
+        let insertableItem: any = {}
+
+        for (let key in item)
+        {
+            if (typeof item[key] == "string")
+            {
+                insertableItem[key] = { S: item[key] }
+            }
+            else if (typeof item[key] == "number")
+            {
+                insertableItem[key] = { N: item[key] }
+            }
+            else
+            {
+                throw new Error("Can not insert object with unknown variable types")
+            }
+        }
+
+        const document = {
+            TableName: this.tableName,
+            Item: insertableItem
+        }
+        return this.db.putItem(document).promise()
     }
 
     public async updateOne(query: any, update: any, options: any): Promise<any>
