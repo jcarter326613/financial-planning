@@ -50,31 +50,19 @@ export class Collection
 
     public async findOne<T = any>(filter: any): Promise<T>
     {
-        console.info(`Finding document: ${JSON.stringify(filter)}`)
-        const result = await this.db.getItem(filter).promise()
-        return result.Item as unknown as T
+        let searchableDocument = this.convertToDocument(filter)
+        const document = {
+            TableName: this.tableName,
+            Key: searchableDocument
+        }
+        console.info(`Finding document: ${JSON.stringify(document)}`)
+        const result = await this.db.getItem(document).promise()
+        return this.convertFromDocument(result.Item)
     }
 
     public async insertOne(item: any): Promise<any>
     {
-        let insertableItem: any = {}
-
-        for (let key in item)
-        {
-            if (typeof item[key] == "string")
-            {
-                insertableItem[key] = { S: item[key] }
-            }
-            else if (typeof item[key] == "number")
-            {
-                insertableItem[key] = { N: item[key] }
-            }
-            else
-            {
-                throw new Error("Can not insert object with unknown variable types")
-            }
-        }
-
+        const insertableItem = this.convertToDocument(item)
         const document = {
             TableName: this.tableName,
             Item: insertableItem
@@ -99,6 +87,51 @@ export class Collection
         }
         console.info(`Updating document: ${JSON.stringify(finalObject)}`)
         return this.db.putItem(finalObject).promise()
+    }
+
+    private convertToDocument(obj: any): any
+    {
+        let insertableItem: any = {}
+
+        for (let key in obj)
+        {
+            if (typeof obj[key] == "string")
+            {
+                insertableItem[key] = { S: obj[key] }
+            }
+            else if (typeof obj[key] == "number")
+            {
+                insertableItem[key] = { N: obj[key] }
+            }
+            else
+            {
+                throw new Error("Can not insert object with unknown variable types")
+            }
+        }
+
+        return insertableItem
+    }
+
+    private convertFromDocument<T>(obj: any): T
+    {
+        let retVal: any = {}
+        for (let key in obj)
+        {
+            if (obj[key]["S"] != null)
+            {
+                retVal[key] = obj[key]["S"]
+            }
+            else if (obj[key]["N"] != null)
+            {
+                retVal[key] = Number(obj[key]["N"])
+            }
+            else
+            {
+                throw new Error(`Can not parse object with variable type ${obj[key]}`)
+            }
+        }
+
+        return retVal
     }
 }
 
