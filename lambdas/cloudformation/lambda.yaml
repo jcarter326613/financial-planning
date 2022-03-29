@@ -85,6 +85,11 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                   - ssm:GetParameter
+                  - dynamodb:GetItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
                 Resource: '*'
 
   LogsLogGroup:

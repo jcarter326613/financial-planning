@@ -4,8 +4,8 @@ export class Database
 {
     public static instance: Database = new Database()
 
-    private stockHistoryConfigCollectionName = "StockHistoryConfig"
-    private accountCollectionName = "Account"
+    private stockHistoryConfigCollectionName = "FreeDays_StockHistoryConfig"
+    private accountCollectionName = "FreeDays_Account"
     private isInitialized = false
     private db: aws.DynamoDB | undefined
 
