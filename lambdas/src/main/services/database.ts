@@ -1,4 +1,5 @@
 import * as aws from "aws-sdk"
+import {v4 as uuidv4} from 'uuid'
 
 export class Database
 {
@@ -62,7 +63,7 @@ export class Collection
 
     public async insertOne(item: any): Promise<any>
     {
-        const insertableItem = this.convertToDocument(item)
+        const insertableItem = this.convertToDocument({...item, _id: uuidv4()})
         const document = {
             TableName: this.tableName,
             Item: insertableItem

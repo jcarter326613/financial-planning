@@ -17,7 +17,8 @@ describe('Database service', () => {
                 TableName: "testTable",
                 Item: {
                     testString: {S: "test"},
-                    testNumber: {N: 123}
+                    testNumber: {N: 123},
+                    _id: sinon.match.any
                 }
             }), "PutItem called with the right parameters").true
     })
