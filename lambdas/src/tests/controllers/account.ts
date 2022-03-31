@@ -6,7 +6,9 @@ import * as sinon from "sinon"
 import * as aws from "aws-sdk"
 
 describe('Account management', () => {
-    let putItemMoc = sinon.fake((_1: any) => {})
+    let putItemMoc = sinon.fake((_1: any): {promise: () => Promise<any>} => {
+        return {promise: () => Promise.resolve({})}
+    })
     let queryMoc = sinon.fake((lookup: aws.DynamoDB.QueryInput): {promise: () => Promise<any>} => {
         let response: any
         if (lookup.TableName == "FreeDays_Account" && lookup.IndexName == "Unique_username" &&
