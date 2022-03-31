@@ -41,6 +41,7 @@ export class Account
         }
         console.info(`Finding document: ${JSON.stringify(document)}`)
         const result = await db.query(document).promise()
+        console.info("t1")
         if (result.Count != 0)
         {
             throw new HttpError(409, "User already exists")
@@ -48,6 +49,7 @@ export class Account
 
         // Insert the symbol into the database
         let hashedPassword = await bcrypt.hash(password, 12)
+        console.info("t2")
         try
         {
             const document = {
@@ -58,6 +60,7 @@ export class Account
                 }
             }
             const result = await db.putItem(document).promise()
+            console.info("t3")
             if (result.$response?.error != null)
             {
                 const message = JSON.stringify(result.$response.error)
