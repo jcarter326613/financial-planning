@@ -58,7 +58,13 @@ export class Account
                     hashedPassword: {S: hashedPassword}
                 }
             }
-            await db.putItem(document)
+            const result = await db.putItem(document).promise()
+            if (result.$response?.error != null)
+            {
+                const message = JSON.stringify(result.$response.error)
+                console.error(`Error inserting user in database during create: ${message}`)
+                throw new Error(message)
+            }
             return {"success": true, "message": undefined}
         }
         catch (e: any)
