@@ -48,7 +48,7 @@ export class Account
         }
 
         // Insert the symbol into the database
-        let hashedPassword = await bcrypt.hash(password, 12)
+        let hashedPassword = await bcrypt.hash(password, 10)
         console.info("t2")
         try
         {
