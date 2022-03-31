@@ -1,12 +1,12 @@
 import { ArgumentsInvalidException } from "../exceptions/argumentsInvalidException"
 import { Authentication, TokenType as AuthTokenType } from "../services/authentication"
-import { Database, ObjectId } from "../services/database"
+import { Database } from "../services/database"
 import { HttpError } from "../exceptions/httpError"
 import { LambdaRequest } from "../lambdaRequest"
 import { startCall } from "../lambdaShell"
 import { Secrets } from "../services/secrets"
 import { UnauthorizedException } from "../exceptions/unauthorizedException"
-
+import * as aws from "aws-sdk"
 import * as bcrypt from "bcrypt"
 
 export const post_create = async (request: any) => startCall(request, instance.create)
@@ -15,6 +15,8 @@ export const post_authorize = async (request: any) => startCall(request, instanc
 
 export class Account
 {
+    private static accountCollectionName = "FreeDays_Account"
+
     public async create(request: LambdaRequest<CreateAccountRequest>): Promise<CreateAccountResponse>
     {
         // Validate the input
@@ -29,8 +31,18 @@ export class Account
         if (username.length == 0 || password.length == 0) throw new ArgumentsInvalidException("Username and password can not be blank")
 
         // Check if the user already exists
-        let collection = Database.instance.getAccountCollection()
-        if ((await collection.findOne({username: username})) != null)
+        const db = Database.instance.getDb()
+        const document = {
+            TableName: Account.accountCollectionName,
+            IndexName: "Unique_username",
+            KeyConditionExpression: "username = :username",
+            ExpressionAttributeValues: {
+                ":username": {S: username}
+            }
+        }
+        console.info(`Finding document: ${JSON.stringify(document)}`)
+        const result = await db.query(document).promise()
+        if (result.Count != 0)
         {
             throw new HttpError(409, "User already exists")
         }
@@ -39,12 +51,14 @@ export class Account
         let hashedPassword = await bcrypt.hash(password, 12)
         try
         {
-            let dbObject: DatabaseUserObject = {
-                _id: undefined,
-                username: username, 
-                hashedPassword: hashedPassword
+            const document = {
+                TableName: Account.accountCollectionName,
+                Item: {
+                    username: {S: username},
+                    hashedPassword: {S: hashedPassword}
+                }
             }
-            await collection.insertOne(dbObject)
+            await db.putItem(document)
             return {"success": true, "message": undefined}
         }
         catch (e: any)
@@ -56,8 +70,7 @@ export class Account
 
     public async login(request: LambdaRequest<LoginAccountRequest>): Promise<LoginAccountResponse>
     {
-        Authentication.instance.initialize()
-
+        /*
         if (request.body?.username == null || request.body?.password == null)
         {
             throw new HttpError(400, "Bad request")
@@ -72,14 +85,16 @@ export class Account
             throw new HttpError(401, "Credentials invalid")
         }
 
-        const accessToken = Authentication.instance.generateAccessToken(userDto._id.toString())
-        const refreshToken = Authentication.instance.generateRefreshToken(userDto._id.toString())
+        const accessToken = await Authentication.instance.generateAccessToken(userDto._id.toString())
+        const refreshToken = await Authentication.instance.generateRefreshToken(userDto._id.toString())
         return {
             accessToken: accessToken, 
             accessTokenExpirationMinutes: Authentication.instance.accessTokenExpirationMinutes,
             refreshToken: refreshToken,
             refreshTokenExpirationMinutes: Authentication.instance.refreshTokenExpirationMinutes
         }
+        */
+       throw new Error("Not implemented")
     }
 
     public async authorize(request: LambdaRequest<void>): Promise<AuthorizeResponse>
@@ -88,7 +103,7 @@ export class Account
 
         // Extract the user id
         if (request.headers == null) throw new UnauthorizedException()
-        const userId = Authentication.instance.verifyAuthentication(request.headers["authorization"], AuthTokenType.Auth)
+        const userId = await Authentication.instance.verifyAuthentication(request.headers["authorization"], AuthTokenType.Auth)
         if (userId == null) throw new UnauthorizedException()
 
         // Return the authenticated user details
@@ -163,7 +178,6 @@ interface AuthorizeResponse
  */
 interface DatabaseUserObject
 {
-    _id: ObjectId | undefined
     username: string | undefined
     hashedPassword: string | undefined
 }

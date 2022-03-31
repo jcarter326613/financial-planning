@@ -12,8 +12,8 @@
               "${workspaceRoot}/node_modules/.bin/ts-mocha",
               "-p",
               "${workspaceRoot}/tsconfig.json",
-              "--file",
-              "${workspaceRoot}/src/tests/setupTests.ts",
+              //"--file",
+              //"${workspaceRoot}/src/tests/setupTests.ts",
               "--inspect-brk",
               "${relativeFile}"
             ],

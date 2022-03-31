@@ -3,11 +3,14 @@ import { Database } from "./services/database"
 import { HttpError } from "./exceptions/httpError"
 import { LambdaRequest } from "./lambdaRequest"
 import { Secrets } from "./services/secrets"
+import * as aws from "aws-sdk"
+
+aws.config.update({
+    region: "us-east-1"
+});
 
 export const startCall = async <T>(request: any, lambda: ((request: LambdaRequest<T>) => any)): Promise<any> =>
 {
-    await Secrets.instance.initialize()
-    await Database.instance.initialize()
     try
     {
         console.info(`Request: ${JSON.stringify(request)}`)

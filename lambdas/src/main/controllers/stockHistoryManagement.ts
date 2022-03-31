@@ -10,6 +10,7 @@ export class StockHistoryManagement
 {
     public async addStockToTrack(request: LambdaRequest): Promise<{"success": boolean}>
     {
+        /*
         const user = Authentication.instance.getDecodedUserData(request)
 
         // Validate the input
@@ -27,7 +28,7 @@ export class StockHistoryManagement
         const update = { $set: { name: symbol } };
         const options = { upsert: true };
         await collection.updateOne(query, update, options);
-
+        */
         return {"success": true}
     }
 }

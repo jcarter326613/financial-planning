@@ -4,25 +4,42 @@ export class Secrets
 {
     public static instance = new Secrets()
 
-    public accessTokenSecret: string
-    public refreshTokenSecret: string
+    private ssm: aws.SSM | undefined
+    private accessTokenSecret: string | undefined
+    private refreshTokenSecret: string | undefined
 
-    private isInitialized = false
-
-    public constructor()
+    public async getAccessTokenSecret(): Promise<string>
     {
-        this.accessTokenSecret = ""
-        this.refreshTokenSecret = ""
+        if (this.accessTokenSecret == null)
+        {
+            const ssm = await this.getSsm()
+            this.accessTokenSecret = await this.getParameter(ssm, "/freedays/accessTokenSecret")
+            if (this.accessTokenSecret == null || this.accessTokenSecret.length == 0)
+            {
+                throw new Error("accessTokenSecret null or blank")
+            }
+        }
+        return this.accessTokenSecret
     }
 
-    public async initialize()
+    public async getRefreshTokenSecret(): Promise<string>
     {
-        if(this.isInitialized) return
-        this.isInitialized = true
-        const ssm = new aws.SSM()
+        if (this.refreshTokenSecret == null)
+        {
+            const ssm = await this.getSsm()
+            this.refreshTokenSecret = await this.getParameter(ssm, "/freedays/refreshTokenSecret")
+            if (this.refreshTokenSecret == null || this.refreshTokenSecret.length == 0)
+            {
+                throw new Error("refreshTokenSecret null or blank")
+            }
+        }
+        return this.refreshTokenSecret
+    }
 
-        this.accessTokenSecret = await this.getParameter(ssm, "/freedays/accessTokenSecret")
-        this.refreshTokenSecret = await this.getParameter(ssm, "/freedays/refreshTokenSecret")
+    private getSsm(): aws.SSM
+    {
+        if (this.ssm == null) { this.ssm = new aws.SSM() }
+        return this.ssm
     }
 
     private async getParameter(ssm: aws.SSM, name: string): Promise<string>

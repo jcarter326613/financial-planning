@@ -1,31 +1,46 @@
 import { expect } from "chai"
 import { Account } from "../../main/controllers/account"
 import { Database } from "../../main/services/database"
-import * as sinon from "sinon"
 import { HttpError } from "../../main/exceptions/httpError"
+import * as sinon from "sinon"
+import * as aws from "aws-sdk"
 
 describe('Account management', () => {
-    let insertMoc = sinon.fake((_1: any) => {})
-    let findMoc = sinon.fake((lookup: {username: string}) => {
-        if (lookup.username == "dupUser")
-        {
-            return {username: "dupUser", hashedPassword: "sefsoesfoj"}
+    let putItemMoc = sinon.fake((_1: any) => {})
+    let queryMoc = sinon.fake((lookup: aws.DynamoDB.QueryInput): {promise: () => Promise<any>} => {
+        let response: any
+        if (lookup.TableName == "FreeDays_Account" && lookup.IndexName == "Unique_username" &&
+            lookup.ExpressionAttributeValues[":username"]?.S == "dupUser") {
+            
+            response = {
+                Items: [
+                    {
+                        username: {S: "dupUser"},
+                        hashedPassword: {S: "sefsoesfoj"}
+                    }
+                ],
+                Count: 1
+            }
+        } else {
+            response = {
+                Count: 0
+            }
         }
-        return null
+        return {promise: () => Promise.resolve(response)}
     })
 
     before(() => {
-        sinon.replace(Database.instance, "getAccountCollection", (): any => {
+        sinon.replace(Database.instance, "getDb", (): any => {
             return {
-                insertOne: insertMoc,
-                findOne: findMoc
+                putItem: putItemMoc,
+                query: queryMoc
             }
         })
     })
 
     beforeEach(() => {
-        insertMoc.resetHistory()
-        findMoc.resetHistory()
+        putItemMoc.resetHistory()
+        queryMoc.resetHistory()
     })
 
     it('create account', async () => {
@@ -40,12 +55,24 @@ describe('Account management', () => {
             }
         }
 
+        // Run the test
         let result = await controller.create(request)
         expect(result.success, "Action success").true
-        expect(insertMoc.calledOnce, "Called insert once").true
-        expect(insertMoc.calledOnceWith(sinon.match.has("username", "testUsername")), "Called insert with right username").true
-        expect(insertMoc.calledOnceWith(sinon.match.has("hashedPassword")), "Called insert with password").true
-        expect(insertMoc.calledOnceWith(sinon.match.has("hashedPassword", "testPassword")), "Password hashed").false
+        expect(putItemMoc.calledOnce, "Called insert once").true
+        expect(putItemMoc.calledOnceWith({
+                TableName: "FreeDays_Account",
+                Item: {
+                    username: {S: "testUsername"},
+                    hashedPassword: {S: sinon.match.any}
+                }
+            }), "Called insert with right username").true
+        expect(putItemMoc.calledOnceWith({
+                TableName: "FreeDays_Account",
+                Item: {
+                    username: {S: "testUsername"},
+                    hashedPassword: {S: "testPassword"}
+                }
+            }), "Password hashed").false
     })
 
     it('create account not allowing dups', async () => {
