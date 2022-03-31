@@ -34,7 +34,6 @@ export class Account
         const db = Database.instance.getDb()
         const document = {
             TableName: Account.accountCollectionName,
-            IndexName: "Unique_username",
             KeyConditionExpression: "username = :username",
             ExpressionAttributeValues: {
                 ":username": {S: username}

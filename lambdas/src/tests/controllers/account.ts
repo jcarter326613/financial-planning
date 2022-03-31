@@ -11,7 +11,7 @@ describe('Account management', () => {
     })
     let queryMoc = sinon.fake((lookup: aws.DynamoDB.QueryInput): {promise: () => Promise<any>} => {
         let response: any
-        if (lookup.TableName == "FreeDays_Account" && lookup.IndexName == "Unique_username" &&
+        if (lookup.TableName == "FreeDays_Account" &&
             lookup.ExpressionAttributeValues[":username"]?.S == "dupUser") {
             
             response = {

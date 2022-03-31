@@ -6,17 +6,8 @@ Resources:
       TableName: FreeDays_Account
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
-        - AttributeName: _id
-          AttributeType: S
         - AttributeName: username
           AttributeType: S
       KeySchema: 
-        - AttributeName: _id
+        - AttributeName: username
           KeyType: HASH
-      GlobalSecondaryIndexes:
-        - IndexName: Unique_username
-          KeySchema:
-            - AttributeName: username
-              KeyType: HASH
-          Projection:
-            ProjectionType: ALL
