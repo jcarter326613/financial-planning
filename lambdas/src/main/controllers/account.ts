@@ -39,9 +39,7 @@ export class Account
                 ":username": {S: username}
             }
         }
-        console.info(`Finding document: ${JSON.stringify(document)}`)
         const result = await db.query(document).promise()
-        console.info("t1")
         if (result.Count != 0)
         {
             throw new HttpError(409, "User already exists")
@@ -49,7 +47,6 @@ export class Account
 
         // Insert the symbol into the database
         let hashedPassword = await bcrypt.hash(password, 10)
-        console.info("t2")
         try
         {
             const document = {
@@ -60,7 +57,6 @@ export class Account
                 }
             }
             const result = await db.putItem(document).promise()
-            console.info("t3")
             if (result.$response?.error != null)
             {
                 const message = JSON.stringify(result.$response.error)
@@ -78,7 +74,6 @@ export class Account
 
     public async login(request: LambdaRequest<LoginAccountRequest>): Promise<LoginAccountResponse>
     {
-        /*
         if (request.body?.username == null || request.body?.password == null)
         {
             throw new HttpError(400, "Bad request")
@@ -86,23 +81,27 @@ export class Account
         let username = request.body?.username
         let password = request.body?.password
 
-        let collection = Database.instance.getAccountCollection()
-        let userDto: DatabaseUserObject | null  = await collection.findOne<DatabaseUserObject>({username: username})
-        if (userDto?._id == null || !await bcrypt.compare(password, userDto.hashedPassword ?? ""))
+        let db = Database.instance.getDb()
+        let document = {
+            TableName: Account.accountCollectionName,
+            Key: {
+                username: { S: username }
+            }
+        }
+        let hashedPassword = (await db.getItem(document).promise()).Item?.hashedPassword?.S
+        if (hashedPassword == null || !await bcrypt.compare(password, hashedPassword ?? ""))
         {
             throw new HttpError(401, "Credentials invalid")
         }
 
-        const accessToken = await Authentication.instance.generateAccessToken(userDto._id.toString())
-        const refreshToken = await Authentication.instance.generateRefreshToken(userDto._id.toString())
+        const accessToken = await Authentication.instance.generateAccessToken(username)
+        const refreshToken = await Authentication.instance.generateRefreshToken(username)
         return {
             accessToken: accessToken, 
             accessTokenExpirationMinutes: Authentication.instance.accessTokenExpirationMinutes,
             refreshToken: refreshToken,
             refreshTokenExpirationMinutes: Authentication.instance.refreshTokenExpirationMinutes
         }
-        */
-       throw new Error("Not implemented")
     }
 
     public async authorize(request: LambdaRequest<void>): Promise<AuthorizeResponse>

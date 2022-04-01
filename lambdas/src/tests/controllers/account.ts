@@ -9,6 +9,22 @@ describe('Account management', () => {
     let putItemMoc = sinon.fake((_1: any): {promise: () => Promise<any>} => {
         return {promise: () => Promise.resolve({})}
     })
+    let getItemMoc = sinon.fake((lookup: aws.DynamoDB.GetItemInput): {promise: () => Promise<any>} => {
+        let response: any
+        if (lookup.TableName == "FreeDays_Account" &&
+            lookup.Key["username"]?.S == "dupUser") {
+            
+            response = {
+                Item: {
+                    username: {S: "dupUser"},
+                    hashedPassword: {S: "$2b$10$tlClgawX2LJLwxB0LEWh/eK1OlhR7q35nBbAcjyRuXkx3GrxmWdR6"} //querty
+                }
+            }
+        } else {
+            response = null
+        }
+        return {promise: () => Promise.resolve(response)}
+    })
     let queryMoc = sinon.fake((lookup: aws.DynamoDB.QueryInput): {promise: () => Promise<any>} => {
         let response: any
         if (lookup.TableName == "FreeDays_Account" &&
@@ -18,7 +34,7 @@ describe('Account management', () => {
                 Items: [
                     {
                         username: {S: "dupUser"},
-                        hashedPassword: {S: "sefsoesfoj"}
+                        hashedPassword: {S: "$2b$10$tlClgawX2LJLwxB0LEWh/eK1OlhR7q35nBbAcjyRuXkx3GrxmWdR6"} //querty
                     }
                 ],
                 Count: 1
@@ -35,6 +51,7 @@ describe('Account management', () => {
         sinon.replace(Database.instance, "getDb", (): any => {
             return {
                 putItem: putItemMoc,
+                getItem: getItemMoc,
                 query: queryMoc
             }
         })
@@ -98,6 +115,47 @@ describe('Account management', () => {
         {
             expect(e instanceof HttpError, "Correct error type").true
             expect((e as HttpError).statusCode, "Correct error code").equals(409)
+        }
+    })
+
+    it('login success', async () => {
+        let controller = new Account()
+        let request = {
+            queryStringParameters: undefined,
+            pathParameters: undefined,
+            headers: undefined,
+            body: {
+                username: "dupUser",
+                password: "qwerty"
+            }
+        }
+
+        let response = await controller.login(request)
+        expect(response.accessToken.length, "access token supplied").greaterThan(0)
+        expect(response.refreshToken.length, "refresh token supplied").greaterThan(0)
+    })
+
+    it('login failed', async () => {
+        let controller = new Account()
+        let request = {
+            queryStringParameters: undefined,
+            pathParameters: undefined,
+            headers: undefined,
+            body: {
+                username: "dupUser",
+                password: "qwerty2"
+            }
+        }
+
+        try
+        {
+            let response = await controller.login(request)
+            expect.fail("Password was invalid")
+        }
+        catch(e: any)
+        {
+            expect(e instanceof HttpError, "Correct error type").true
+            expect((e as HttpError).statusCode, "Correct error code").equals(401)
         }
     })
 })
