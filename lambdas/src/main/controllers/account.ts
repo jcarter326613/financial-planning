@@ -104,13 +104,13 @@ export class Account
         }
     }
 
-    public async authorize(request: LambdaRequest<void>): Promise<AuthorizeResponse>
+    public async authorize(request: LambdaRequest<AuthorizationRequest>): Promise<AuthorizeResponse>
     {
         // Designed according to https://www.alexdebrie.com/posts/lambda-custom-authorizers/
 
         // Extract the user id
-        if (request.headers == null) throw new UnauthorizedException()
-        const userId = await Authentication.instance.verifyAuthentication(request.headers["authorization"], AuthTokenType.Auth)
+        if (request.body?.authorizationToken == null) throw new UnauthorizedException()
+        const userId = await Authentication.instance.verifyAuthentication(request.body?.authorizationToken, AuthTokenType.Auth)
         if (userId == null) throw new UnauthorizedException()
 
         // Return the authenticated user details
@@ -164,6 +164,13 @@ interface LoginAccountResponse
     accessTokenExpirationMinutes: number
     refreshToken: string
     refreshTokenExpirationMinutes: number
+}
+
+interface AuthorizationRequest
+{
+    type: string
+    methodArn: string
+    authorizationToken: string
 }
 
 interface AuthorizeResponse
