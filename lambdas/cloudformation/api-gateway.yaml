@@ -92,6 +92,7 @@ Resources:
   Authorizer:
     Type: AWS::ApiGateway::Authorizer
     Properties: 
+      AuthorizerCredentials: !GetAtt InvocationRole.Arn
       AuthorizerUri: 
         Fn::GetAtt: 
         - LambdaAuthorizer
