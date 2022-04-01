@@ -11,7 +11,7 @@ import * as bcrypt from "bcrypt"
 
 export const post_create = async (request: any) => startCall(request, instance.create)
 export const post_login = async (request: any) => startCall(request, instance.login)
-export const post_authorize = async (request: any) => startCall(request, instance.authorize)
+export const post_authorize = async (request: any) => instance.authorize(request)
 
 export class Account
 {
@@ -104,13 +104,13 @@ export class Account
         }
     }
 
-    public async authorize(request: LambdaRequest<AuthorizationRequest>): Promise<AuthorizeResponse>
+    public async authorize(request: AuthorizationRequest): Promise<AuthorizeResponse>
     {
         // Designed according to https://www.alexdebrie.com/posts/lambda-custom-authorizers/
 
         // Extract the user id
-        if (request.body?.authorizationToken == null) throw new UnauthorizedException()
-        const userId = await Authentication.instance.verifyAuthentication(request.body?.authorizationToken, AuthTokenType.Auth)
+        if (request?.authorizationToken == null) throw new UnauthorizedException()
+        const userId = await Authentication.instance.verifyAuthentication(request?.authorizationToken, AuthTokenType.Auth)
         if (userId == null) throw new UnauthorizedException()
 
         // Return the authenticated user details
