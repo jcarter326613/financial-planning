@@ -26,4 +26,4 @@ Resources:
         - AttributeName: type
           KeyType: HASH
         - AttributeName: symbol
-          KeyType: SORT
+          KeyType: RANGE
