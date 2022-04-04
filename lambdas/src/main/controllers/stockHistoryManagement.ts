@@ -8,9 +8,10 @@ export const patch_addStockToTrack = async (request: any) => startCall(request, 
 
 export class StockHistoryManagement
 {
-    public async addStockToTrack(request: LambdaRequest): Promise<{"success": boolean}>
+    private static stockHistoryConfigCollectionName: string = "FreeDays_SymbolHistoryConfig"
+
+    public async addStockToTrack(request: LambdaRequest): Promise<AddStockToTrackResponse>
     {
-        /*
         const user = Authentication.instance.getDecodedUserData(request)
 
         // Validate the input
@@ -22,15 +23,28 @@ export class StockHistoryManagement
         if (symbol == null || symbol.length == 0) throw new ArgumentsInvalidException("Missing query parameters, 'symbol'")
 
         // Upsert the symbol into the database
-        let collection = Database.instance.getStockHistoryConfigCollection()
-
-        const query = { name: symbol };
-        const update = { $set: { name: symbol } };
-        const options = { upsert: true };
-        await collection.updateOne(query, update, options);
-        */
+        const db = Database.instance.getDb()
+        const document = {
+            TableName: StockHistoryManagement.stockHistoryConfigCollectionName,
+            Item: {
+                type: {S: "stock"},
+                symbol: {S: symbol}
+            }
+        }
+        const result = await db.putItem(document).promise()
+        if (result.$response?.error != null)
+        {
+            const message = JSON.stringify(result.$response.error)
+            console.error(`Error inserting stock history config in database: ${message}`)
+            throw new Error(message)
+        }
         return {"success": true}
     }
 }
 
 const instance = new StockHistoryManagement()
+
+interface AddStockToTrackResponse
+{
+    success: boolean
+}

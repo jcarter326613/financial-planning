@@ -2,6 +2,7 @@ import { expect } from "chai"
 import { Account } from "../../main/controllers/account"
 import { Database } from "../../main/services/database"
 import { HttpError } from "../../main/exceptions/httpError"
+import { Secrets } from "../../main/services/secrets"
 import * as sinon from "sinon"
 import * as aws from "aws-sdk"
 
@@ -48,6 +49,9 @@ describe('Account management', () => {
     })
 
     before(() => {
+        sinon.replace(Secrets.instance, "getAccessTokenSecret", (): any => "accessTokenSecret")
+        sinon.replace(Secrets.instance, "getRefreshTokenSecret", (): any => "refreshTokenSecret")
+
         sinon.replace(Database.instance, "getDb", (): any => {
             return {
                 putItem: putItemMoc,
@@ -60,6 +64,10 @@ describe('Account management', () => {
     beforeEach(() => {
         putItemMoc.resetHistory()
         queryMoc.resetHistory()
+    })
+
+    after(() => {
+        sinon.restore()
     })
 
     it('create account', async () => {
