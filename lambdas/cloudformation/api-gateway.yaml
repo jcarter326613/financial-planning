@@ -48,8 +48,21 @@ Resources:
   Stage:
     Type: AWS::ApiGateway::Stage
     Properties: 
+      AccessLogSetting:
+        DestinationArn: !GetAtt AccessLogsLogGroup.Arn
+        Format: "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"caller\":\"$context.identity.caller\", \"user\":\"$context.identity.user\",\"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\", \"responseLength\":\"$context.responseLength\" }"
+      DataTraceEnabled: true
+      LoggingLevel: INFO
       DeploymentId: !Ref Deployment
       RestApiId: !Ref RestApi
+      ThrottlingBurstLimit: 4
+      ThrottlingRateLimit: 2
+
+  AccessLogsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/apigateway/Authorizer"
+      RetentionInDays: 7
 
   Dns:
     Type: AWS::Route53::RecordSetGroup
