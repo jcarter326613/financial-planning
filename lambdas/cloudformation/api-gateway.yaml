@@ -54,8 +54,8 @@ Resources:
       DeploymentId: !Ref Deployment
       RestApiId: !Ref RestApi
       MethodSettings:
-        - HttpMethod: *
-          ResourcePath: /*
+        - HttpMethod: "*"
+          ResourcePath: "/*"
           DataTraceEnabled: true
           LoggingLevel: INFO
           ThrottlingBurstLimit: 4
