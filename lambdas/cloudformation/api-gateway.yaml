@@ -52,7 +52,7 @@ Resources:
     Properties: 
       AccessLogSetting:
         DestinationArn: !GetAtt AccessLogsLogGroup.Arn
-        Format: "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"caller\":\"$context.identity.caller\", \"user\":\"$context.identity.user\",\"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\", \"responseLength\":\"$context.responseLength\" }"
+        Format: "{ \"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"caller\":\"$context.identity.caller\", \"user\":\"$context.identity.user\",\"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\", \"status\":\"$context.status\",\"protocol\":\"$context.protocol\", \"responseLength\":\"$context.responseLength\", \"userId\":\"$context.authorizer.userId\", \"errorMessage\":\"$context.error.message\", \"validationErrorMessage\":\"$context.error.validationErrorString\", \"authorizeError\":\"$context.authorize.error\", \"authorizerError\":\"$context.authorizer.error\", \"authenticateError\":\"$context.authenticate.error\", "integrationError\":\"$context.integration.error\" }"
       DeploymentId: !Ref Deployment
       RestApiId: !Ref RestApi
       MethodSettings:
