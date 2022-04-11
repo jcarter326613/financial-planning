@@ -120,6 +120,8 @@ export class Account
         // Return the authenticated user details
         const awsAccountId = process.env.AwsAccountId
         const restApiId = process.env.RestApiId
+        const resource = `arn:aws:execute-api:us-east-1:${awsAccountId}:${restApiId}/*`
+        console.info(`target resource ${resource}`)
         return {
             "principalId": userId,
             "policyDocument": {
@@ -128,7 +130,7 @@ export class Account
                     {
                         "Action": "execute-api:Invoke",
                         "Effect": "Allow",
-                        "Resource": `arn:aws:execute-api:us-east-1:${awsAccountId}:${restApiId}/*`
+                        "Resource": resource
                     }
                 ]
             },
