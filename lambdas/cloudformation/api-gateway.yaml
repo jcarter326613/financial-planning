@@ -155,7 +155,7 @@ Resources:
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         EntryPoint: account.post_authorize
-        RestApiId: ""
+        RestApiId: !Ref RestApi
         InvocationRoleArn: ""
         RestApiRootResourceId: ""
         Path: ""
