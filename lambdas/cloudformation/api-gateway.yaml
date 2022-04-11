@@ -199,7 +199,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       Parameters:
-        AuthorizerId: !Ref Authorizer
+        AuthorizerId: ""
         BucketName: !Ref BucketName
         ZipFileName: !Ref ZipFileName
         RestApiId: !Ref RestApi
