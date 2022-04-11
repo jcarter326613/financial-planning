@@ -50,7 +50,7 @@ export class StockHistoryManagement
             TableName: StockHistoryManagement.stockHistoryConfigCollectionName
         }
         const result = await db.scan(document).promise()
-        console.info(`{{"message"="listStocksToTrack scan", "result"="{JSON.stringify(result)}"`)
+        console.info(`{{"message"="listStocksToTrack scan", "result"="${JSON.stringify(result)}"`)
         if (result?.$response?.error != null || result.Items == null)
         {
             const message = JSON.stringify(result?.$response?.error)

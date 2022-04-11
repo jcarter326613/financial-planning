@@ -109,7 +109,7 @@ export class Account
         // Designed according to https://www.alexdebrie.com/posts/lambda-custom-authorizers/
 
         // Extract the user id
-        console.info("authorize t1")
+        console.info(`authorize t1 ${JSON.stringify(request)}`)
         if (request?.authorizationToken == null) throw new UnauthorizedException()
         console.info("authorize t2")
         const userId = await Authentication.instance.verifyAuthentication(request?.authorizationToken, AuthTokenType.Auth)
