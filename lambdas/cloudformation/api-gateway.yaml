@@ -168,6 +168,7 @@ Resources:
     Type: 'AWS::ApiGateway::Deployment'
     DependsOn:
       - LambdaStockHistoryManagementResource1
+      - LambdaStockHistoryManagementResource2
       - LambdaAccountResource1
       - LambdaAccountResource2
     Properties:

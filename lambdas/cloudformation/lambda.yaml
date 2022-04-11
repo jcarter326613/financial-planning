@@ -90,6 +90,7 @@ Resources:
                   - dynamodb:PutItem
                   - dynamodb:Query
                   - dynamodb:UpdateItem
+                  - dynamodb:Scan
                 Resource: '*'
 
   LogsLogGroup:
