@@ -195,6 +195,21 @@ Resources:
         HttpMethod: PATCH
       TemplateURL: ./lambda.yaml
 
+  LambdaStockHistoryManagementResource2:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Parameters:
+        AuthorizerId: !Ref Authorizer
+        BucketName: !Ref BucketName
+        ZipFileName: !Ref ZipFileName
+        RestApiId: !Ref RestApi
+        InvocationRoleArn: !GetAtt InvocationRole.Arn
+        RestApiRootResourceId: !Ref StockHistoryManagementResource
+        EntryPoint: stockHistoryManagement.get_listStocksToTrack
+        Path: list
+        HttpMethod: GET
+      TemplateURL: ./lambda.yaml
+
   AccountResource:
     Type: AWS::ApiGateway::Resource
     Properties: 
