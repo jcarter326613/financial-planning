@@ -113,7 +113,7 @@ export class Account
         if (request?.authorizationToken == null) throw new UnauthorizedException()
         console.info("authorize t2")
         const userId = await Authentication.instance.verifyAuthentication(request?.authorizationToken, AuthTokenType.Auth)
-        console.info("authorize t3")
+        console.info(`authorize t3 ${userId}`)
         if (userId == null) throw new UnauthorizedException()
         console.info("authorize t4")
 
