@@ -109,9 +109,13 @@ export class Account
         // Designed according to https://www.alexdebrie.com/posts/lambda-custom-authorizers/
 
         // Extract the user id
+        console.info("authorize t1")
         if (request?.authorizationToken == null) throw new UnauthorizedException()
+        console.info("authorize t2")
         const userId = await Authentication.instance.verifyAuthentication(request?.authorizationToken, AuthTokenType.Auth)
+        console.info("authorize t3")
         if (userId == null) throw new UnauthorizedException()
+        console.info("authorize t4")
 
         // Return the authenticated user details
         const awsAccountId = process.env.AwsAccountId
