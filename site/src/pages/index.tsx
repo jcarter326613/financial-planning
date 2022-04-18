@@ -11,8 +11,10 @@ const IndexRoute = ({ path }: PageProps) => {
             maxValue: 3
         }]
     }
+    
     return (
         <main>
+            <div style={{float: "right"}}><a href="/login">Login</a></div>
             <h1>Hello world</h1>
             <PerformanceGrid entries={gridProperties.entries} />
         </main>
