@@ -1,31 +1,29 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query'
-import { Post, User } from './types'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { LoginRequest, LoginResponse } from './login'
 
-const api = createApi({
+export const api = createApi({
+  reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: '/',
   }),
-  tagTypes: ['Post', 'User'],
   endpoints: (build) => ({
-    getPosts: build.query<Post[], void>({
-      query: () => '/posts',
+    login: build.mutation<LoginResponse, LoginRequest>({
+      query(body) {
+        return {
+          url: `account/login`,
+          method: "POST",
+          body
+        }
+      }
     }),
-    getUsers: build.query<User[], void>({
-      query: () => '/users',
-    }),
-    addPost: build.mutation<Post, Omit<Post, 'id'>>({
-      query: (body) => ({
-        url: 'post',
-        method: 'POST',
-        body,
-      }),
-    }),
-    editPost: build.mutation<Post, Partial<Post> & Pick<Post, 'id'>>({
-      query: (body) => ({
-        url: `post/${body.id}`,
-        method: 'POST',
-        body,
-      }),
-    }),
-  }),
+    login2: build.query<LoginResponse, LoginRequest>({
+      query: (code) => {
+        return ({
+          url: 'account/login',
+          method: 'POST',
+          body: code
+        })
+      }
+    })
+  })
 })
